@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { addDays, weekdayOf, type IsoDate, type Weekday } from './dates';
+import { addDays, weekdayOf, type IsoDate } from './dates';
+import { ALL_CHOICES, START_DATES, WEEKDAYS, days, iso } from './test-helpers';
 import {
   PRESETS,
   countWorkingDays,
@@ -9,23 +10,11 @@ import {
   type WorkingDays,
 } from './workingDays';
 
-const iso = (text: string) => text as IsoDate;
-const days = (...weekdays: Weekday[]): WorkingDays => new Set(weekdays);
 const { monFri, sunThu } = PRESETS;
 
 const THU = iso('2026-11-26');
 const FRI = iso('2026-11-27');
 const SAT = iso('2026-11-28');
-
-const WEEKDAYS: Weekday[] = [0, 1, 2, 3, 4, 5, 6];
-
-/** Every non-empty choice of working days: 2^7 - 1 = 127 sets. */
-const ALL_CHOICES: WorkingDays[] = Array.from({ length: 127 }, (_, i) =>
-  days(...WEEKDAYS.filter((d) => ((i + 1) >> d) & 1)),
-);
-
-/** One start date on each weekday, Mon 23 to Sun 29 Nov 2026. Literals, so loading this file runs no engine code. */
-const START_DATES: IsoDate[] = ['23', '24', '25', '26', '27', '28', '29'].map((d) => iso(`2026-11-${d}`));
 
 const label = (choice: WorkingDays) => [...choice].sort().join('');
 
@@ -132,7 +121,7 @@ describe('countWorkingDays', () => {
         }
       }
     }
-    expect(mismatches.slice(0, 5)).toEqual([]);
+    expect(mismatches, mismatches.slice(0, 5).join('\n')).toEqual([]);
   });
 });
 
@@ -182,7 +171,7 @@ describe('nthWorkingDay', () => {
         }
       }
     }
-    expect(mismatches.slice(0, 5)).toEqual([]);
+    expect(mismatches, mismatches.slice(0, 5).join('\n')).toEqual([]);
   });
 
   it('S-3 AC-5: a very slow pace (59,999 Sundays) still gives the right date, at once', () => {

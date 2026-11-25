@@ -90,7 +90,7 @@ describe('day numbers', () => {
       if (date <= previous) problems.push(`${date} does not come after ${previous}`);
       previous = date;
     }
-    expect(problems.slice(0, 5)).toEqual([]);
+    expect(problems, problems.slice(0, 5).join('\n')).toEqual([]);
   });
 });
 
