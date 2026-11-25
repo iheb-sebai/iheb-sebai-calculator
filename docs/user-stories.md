@@ -133,6 +133,7 @@ Spaces around a number are ignored. Time fields start at "0" rather than blank.
 | Due date before today | due date | The due date is in the past. Pick today or a later date. |
 | No working days from today to the due date | result | There are no working days between today and the due date. Pick a later date or add working days. |
 | Admin start date before today | start date | The start date can't be before today. |
+| The engine gets an impossible number (a parser bug; should never be seen) | result | Something in the form isn't valid. Check the fields above. |
 
 ### Acceptance criteria
 
@@ -160,6 +161,8 @@ Spaces around a number are ignored. Time fields start at "0" rather than blank.
 - **AC-3** The result area is a live region (`role="status"`, polite), so screen readers announce changes to it.
 - **AC-4** A field with an error has `aria-invalid="true"`, and its message is linked with `aria-describedby`.
 - **AC-5** The Learner/Admin switch works with the keyboard and shows which role is selected.
+- **AC-6** An error from the checks in S-5 AC-3 is shown next to its field and repeated in the result area, so
+  screen readers announce it.
 
 ## S-7 (STRETCH): English / Arabic
 
@@ -193,3 +196,5 @@ Tests cite these decisions by ID when no story criterion covers the rule (e.g. `
 | D-10 | No public holidays in v1 | They differ by country and year. Saying so is better than guessing wrong. |
 | D-11 | Dates are shown as "Thu 3 Dec 2026" | "12/03" means different dates in different countries. |
 | D-12 | Mon–Fri is the default, and every result names the working days it used | MENA is mixed: Saudi Arabia's weekend is Fri–Sat, while the UAE and Tunisia have Sat–Sun. No default fits everyone, so the result makes the choice visible. |
+| D-13 | Arabic-Indic digits (١٥, ۱۵) are accepted in number fields | Someone typing on an Arabic keyboard shouldn't be told that 15 is not a number. |
+| D-14 | Number fields are text fields with a numeric keyboard, not `type="number"` | Browser number fields hide what was typed: "1e3" arrives as 1000 and letters arrive as blank. The app then couldn't say what is wrong. |
