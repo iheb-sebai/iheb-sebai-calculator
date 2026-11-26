@@ -168,6 +168,7 @@ input[aria-invalid='true'] { border-color: var(--error-icon); box-shadow: inset 
 }
 .day-toggle:hover .day-label { border-color: var(--ink-3); }
 .day-input:checked + .day-label { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+.day-input[aria-invalid='true'] + .day-label { border-color: var(--error-icon); }
 .day-input:focus-visible + .day-label { outline: 2px solid var(--focus); outline-offset: 2px; }
 .preset:active, .day-toggle:active .day-label { transform: scale(0.97); }
 
@@ -218,7 +219,7 @@ input[aria-invalid='true'] { border-color: var(--error-icon); box-shadow: inset 
 .meter { display: flex; flex-direction: column; gap: 0.5rem; }
 .meter-head { display: flex; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; font-size: 0.8125rem; }
 .meter-title { font-weight: 600; color: var(--ink-2); }
-.meter-value { color: var(--muted); font-variant-numeric: tabular-nums; }
+.meter-value { color: var(--muted); font-variant-numeric: tabular-nums; text-wrap: balance; }
 .meter-way-over { font-weight: 700; color: var(--late-strong); }
 .meter-bar { position: relative; height: 26px; }
 .meter-zones { position: absolute; inset-inline: 0; top: 8px; display: flex; height: 10px; border-radius: 999px; overflow: hidden; }

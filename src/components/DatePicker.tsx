@@ -54,10 +54,10 @@ export function DatePicker({ id, label, value, error, today, workingDays, onChan
     focusDay.current = true;
     setOpen(true);
   };
-  const close = (returnFocus: boolean) => {
+  /** Escape: focus goes back to the field, so it is not "left" yet and shows no error (S-5 AC-6). */
+  const closeToField = () => {
     setOpen(false);
-    onTouchRef.current();
-    if (returnFocus) triggerRef.current?.focus();
+    triggerRef.current?.focus();
   };
   const pick = (date: IsoDate) => {
     // onChange also marks the field touched. Calling onTouch as well would update the form
@@ -123,7 +123,11 @@ export function DatePicker({ id, label, value, error, today, workingDays, onChan
           aria-controls={open ? dialogId : undefined}
           aria-invalid={error !== null}
           aria-describedby={describedBy}
-          onClick={() => (open ? close(false) : openCalendar())}
+          onClick={() => {
+            if (!open) return openCalendar();
+            // Clicking the field again closes the calendar; focus stays on the field.
+            setOpen(false);
+          }}
           onKeyDown={(event) => {
             if (event.key === 'ArrowDown' && !open) {
               event.preventDefault();
@@ -151,7 +155,7 @@ export function DatePicker({ id, label, value, error, today, workingDays, onChan
             onKeyDown={(event) => {
               if (event.key === 'Escape') {
                 event.preventDefault();
-                close(true);
+                closeToField();
               }
             }}
             onBlur={(event) => {

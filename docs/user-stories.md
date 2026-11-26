@@ -1,7 +1,9 @@
 # User stories and acceptance criteria
 
-Each criterion has an ID (`S-3 AC-2`). Test names start with that ID, so a failing test points to the rule it
-breaks. [verification.md](verification.md) maps every criterion to its test.
+Each criterion has an ID (`S-3 AC-2`). Most test names cite the criterion they check, or the story or decision
+(`D-1`) when no single criterion fits, so a failing test points to the rule it breaks. The word-for-word checks of
+the screen text are named after the text they check. [verification.md](verification.md) maps every criterion to
+its test.
 
 **Example dates.** 2026-11-26 is a Thursday. Mon–Fri means Saturday and Sunday are the weekend. Sun–Thu means
 Friday and Saturday are the weekend.
@@ -36,8 +38,8 @@ each working day left.
 
 As a learner, I choose which days I work, and I see how many working days I have left.
 
-- **AC-1** Two preset buttons: **Mon–Fri** (the default) and **Sun–Thu**. There is also one toggle button for each of
-  the 7 days, Mon to Sun.
+- **AC-1** Two preset buttons: **Mon–Fri** (the default) and **Sun–Thu**. There is also one toggle for each of the
+  7 days, Mon to Sun: a checkbox styled as a button (S-6 AC-5).
 - **AC-2** Pressing a preset sets the days. The preset buttons always match the days: the matching preset shows as
   pressed, and if no preset matches, **Custom** is shown.
 - **AC-3** Working days left = every checked weekday from today to the due date. Both ends are included.
@@ -79,8 +81,9 @@ As a learner, I enter the minutes I can spare per working day, and I see whether
     time."
   - Tight: "You need more than 80% of your spare time, so one bad day could make you late."
 - **AC-10** When spare time is more than 0, a pace meter shows the minutes needed as a share of the spare time:
-  "Your pace" and "15 of your 18 spare min · 83%". The percentage is rounded to the nearest whole percent (D-16):
-  15 of 18 is 83.3%, shown as 83%. The bar has three zones marked 0%, 80%, 100% and "over": On track, Tight and
+  "Your pace" and "15 min of your 18 min spare · 83%". From 60 minutes up the times also show hours (S-1 AC-5):
+  "400 min (6 h 40 min) of your 480 min (8 h) spare · 83%". The percentage is rounded to the nearest whole percent
+  (D-16): 15 of 18 is 83.3%, shown as 83%. The bar has three zones marked 0%, 80%, 100% and "over": On track, Tight and
   Late. A marker shows the exact share, so it always sits in its status's zone, and it stops at the end of the bar
   past 125%. The bar repeats the status in the panel and the chip, so it is hidden from screen readers; the text
   line is read.
@@ -176,7 +179,8 @@ Spaces around a number are ignored. Time fields start at "0" rather than blank.
   input by its label.
 - **AC-2** The whole app works with the keyboard alone, and keyboard focus is always visible.
 - **AC-3** The result area is a live region (`role="status"`, polite), so screen readers announce changes to it.
-- **AC-4** A field with an error has `aria-invalid="true"`, and its message is linked with `aria-describedby`.
+- **AC-4** A field with an error has `aria-invalid="true"`, and its message is linked with `aria-describedby`. For
+  the working days, each day toggle is marked and linked; for hours and minutes, both inputs of the group are.
 - **AC-5** The Learner/Admin switch is a two-option segmented control built on radio buttons, so it works with the
   arrow keys and shows which role is selected. The day toggles are checkboxes and the presets are buttons, so Tab,
   Space and Enter work on them.
@@ -189,10 +193,12 @@ Spaces around a number are ignored. Time fields start at "0" rather than blank.
   ("Thu 31 Dec 2026"), or "Pick a date" when empty, and opens a month calendar, Monday first, with "Previous
   month" and "Next month" buttons. Today and the picked day are marked; non-working days are lighter but can
   still be picked (S-2 AC-5). Days before today are greyed out and can't be picked; the arrow keys still pass
-  over them. The "in the past" errors (S-5) stay: a page left open past midnight can still hold yesterday's date. It works with the keyboard alone: Enter or Down opens it on the picked day (else
-  today), arrows move by day and week, Home/End go to the start or end of the week, Page Up/Down change month
-  (with Shift, year), Enter picks, Escape closes; focus then returns to the field. A click outside or Tab out
-  also closes it. The field is a combobox labelled with the field's name; the calendar is a dialog with a grid.
+  over them. The "in the past" errors (S-5) stay: a page left open past midnight can still hold yesterday's date.
+  It works with the keyboard alone: Enter or Down opens it on the picked day (else today), arrows move by day and
+  week, Home/End go to the start or end of the week, Page Up/Down change month (with Shift, year), Enter picks.
+  Escape closes it and returns focus to the field; the field has not been left, so an empty date shows no error
+  yet (S-5 AC-6). A click outside or Tab out also closes it. The field is a combobox labelled with the field's
+  name; the calendar is a dialog with a grid.
 
 ## S-7 (STRETCH): English / Arabic
 
@@ -200,8 +206,15 @@ English and Arabic, with a right-to-left layout. **Status: partly done.**
 
 - Done: Arabic-Indic digits (١٥, ۱۵) are accepted in every number field (D-13), and the header shows the name in
   Arabic (خطوة).
-- Not done: Arabic text and the right-to-left layout. All visible text comes from `src/lib/messages.ts` and the
-  sentences in `src/lib/format.ts`, so adding Arabic means translating those two files and setting `dir="rtl"`.
+- Not done: Arabic text and the right-to-left layout.
+- Where the visible text lives today, for whoever builds it:
+  - `src/lib/messages.ts`: labels, headings, messages, statuses and empty states;
+  - `src/lib/format.ts`: the result sentences built from the numbers;
+  - `src/components/LearnerForm.tsx`: the words "a day" and "over" around the big number and in the phone summary;
+  - `src/lib/dates.ts`: weekday short names and the date format ("Thu 3 Dec 2026");
+  - `src/lib/calendar.ts`: month names and full weekday names in the date picker;
+  - `src/lib/workingDays.ts`: the working-day labels in result sentences ("Mon–Fri", "Sun–Thu", "every day").
+- `src/lib/messages.test.ts` checks only the text in `messages.ts` against this file.
 
 ## Not implemented (next)
 
@@ -248,8 +261,8 @@ Tests cite these decisions by ID when no story criterion covers the rule (e.g. `
 | D-3 | Today counts only if it is a working day | A weekend day can't be counted on for work-time learning. |
 | D-4 | "Today" is passed into the engine | Tests give the same result on any machine and in any time zone. |
 | D-5 | Due date is included | People can still study on the due day. |
-| D-6 | 0 spare / 0 daily minutes is Late, not an error | Many people really get no learning time at work. It isn't a typo, and the useful answer is "you won't finish, ask for time". More than 480 needed per day is shown for the same reason. |
-| D-7 | The admin sees a recommended date as well as the earliest one | The earliest date puts learners in "Tight". The recommended date uses the same 80% rule as the learner's "On track". "Recommended" is plainer for an admin than "comfortable". |
+| D-6 | 0 spare minutes is Late, and 0 daily minutes gives the admin a "no date" message; neither is an error | Many people really get no learning time at work. It isn't a typo, and the useful answer is "you won't finish, ask for time". More than 480 needed per day is shown for the same reason. |
+| D-7 | The admin sees a recommended date as well as the earliest one | The earliest date can put learners in "Tight" (300 min at 60 a day needs the full 60 every day). The recommended date uses the same 80% rule as the learner's "On track". "Recommended" is plainer for an admin than "comfortable". |
 | D-8 | Per-day inputs are capped at 480 minutes | 8 hours is a full working day. A larger value is almost certainly a typo. |
 | D-9 | Dates are capped at 5 years ahead | Training deadlines further out than that are almost certainly typos. |
 | D-10 | No public holidays in v1 | They differ by country and year. Saying so is better than guessing wrong. |

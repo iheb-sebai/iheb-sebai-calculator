@@ -53,7 +53,14 @@ export function WorkingDaysPicker({ value, error, onChange }: Props) {
       <div className="day-toggles">
         {DAY_ORDER.map((day) => (
           <label key={day} className="day-toggle">
-            <input type="checkbox" className="day-input" checked={value.has(day)} onChange={() => toggle(day)} />
+            <input
+              type="checkbox"
+              className="day-input"
+              checked={value.has(day)}
+              aria-invalid={error !== null}
+              aria-describedby={error === null ? undefined : errorId('workingDays')}
+              onChange={() => toggle(day)}
+            />
             <span className="day-label">{WEEKDAY_SHORT_NAMES[day]}</span>
           </label>
         ))}

@@ -213,20 +213,20 @@ describe('learner', () => {
     expect(result()).toHaveTextContent(`390 min (6 h 30 min) left. ${LABELS.noHolidays}`);
   });
 
-  it('S-3 AC-10: the pace meter shows needed against spare, rounded up', async () => {
+  it('S-3 AC-10: the pace meter shows needed against spare, rounded to the nearest', async () => {
     const user = setup();
     await fillRealisticExample(user);
     expect(screen.queryByText(LABELS.yourPace)).not.toBeInTheDocument(); // no spare time yet
     await typeInto(user, spareField(), '30');
-    expect(result()).toHaveTextContent('15 of your 30 spare min · 50%');
+    expect(result()).toHaveTextContent('15 min of your 30 min spare · 50%');
     await typeInto(user, spareField(), '18');
-    expect(result()).toHaveTextContent('15 of your 18 spare min · 83%'); // 83.3%, rounded normally
+    expect(result()).toHaveTextContent('15 min of your 18 min spare · 83%'); // 83.3%, rounded normally
     await typeInto(user, spareField(), '0');
     expect(screen.queryByText(LABELS.yourPace)).not.toBeInTheDocument(); // no meter at 0 spare
     expect(document.querySelector('.meter-bar')).toBeNull();
   });
 
-  it('S-3 AC-10: a daily need over a full working day reads "way over", with no bar', async () => {
+  it('S-3 AC-11: a daily need over a full working day reads "way over", with no bar', async () => {
     const user = setup();
     await setDuration(user, 'Total course time', '999', '0');
     await setDuration(user, 'Time already done', '0', '0');
@@ -234,9 +234,18 @@ describe('learner', () => {
     await typeInto(user, spareField(), '30');
     expect(result()).toHaveTextContent(LABELS.yourPace);
     expect(result()).toHaveTextContent(LABELS.wayOver);
-    expect(result()).not.toHaveTextContent('of your 30 spare min');
+    expect(result()).not.toHaveTextContent('of your 30 min spare');
     expect(document.querySelector('.meter-bar')).toBeNull();
     expect(result()).toHaveTextContent('Late');
+  });
+
+  it('S-3 AC-10, S-1 AC-5: the pace line shows hours from 60 minutes up', async () => {
+    const user = setup();
+    await setDuration(user, 'Total course time', '7', '40');
+    await setDuration(user, 'Time already done', '1', '10');
+    await pickDate(user, 'Due date', '2026-11-27'); // 2 working days: 195 min a day
+    await typeInto(user, spareField(), '240');
+    expect(result()).toHaveTextContent('195 min (3 h 15 min) of your 240 min (4 h) spare · 81%');
   });
 
   it('S-3 AC-9: On track and Tight come with their explanations', async () => {
@@ -265,6 +274,60 @@ describe('learner', () => {
     for (const day of ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']) await user.click(screen.getByRole('checkbox', { name: day }));
     expect(within(group('Working days')).getByText(CALC_ERROR_TEXT['no-working-days-selected'])).toBeInTheDocument();
     expect(result()).toHaveTextContent(CALC_ERROR_TEXT['no-working-days-selected']);
+  });
+
+  it('S-6 AC-4: with no working day, every day toggle is invalid and linked to the message', async () => {
+    const user = setup();
+    await fillRealisticExample(user);
+    for (const day of ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']) await user.click(screen.getByRole('checkbox', { name: day }));
+    for (const day of ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']) {
+      const toggle = screen.getByRole('checkbox', { name: day });
+      expect(toggle).toHaveAttribute('aria-invalid', 'true');
+      expect(toggle).toHaveAccessibleDescription(CALC_ERROR_TEXT['no-working-days-selected']);
+    }
+    await user.click(screen.getByRole('button', { name: 'Mon–Fri' }));
+    expect(screen.getByRole('checkbox', { name: 'Mon' })).toHaveAttribute('aria-invalid', 'false');
+  });
+
+  it('S-6 AC-6: time done over the total is shown at "Time already done" and in the result', async () => {
+    const user = setup();
+    await fillRealisticExample(user);
+    await setDuration(user, 'Time already done', '8', '0');
+    const message = CALC_ERROR_TEXT['done-over-total'];
+    expect(within(group('Time already done')).getByText(message)).toBeInTheDocument();
+    expect(result()).toHaveTextContent(message);
+    expect(within(group('Time already done')).getByLabelText('Hours')).toHaveAccessibleDescription(message);
+  });
+
+  it.each([
+    ['required', 'Total course time', 'Hours', ''],
+    ['hours-over-max', 'Total course time', 'Hours', '1000'],
+    ['minutes-over-59', 'Time already done', 'Minutes', '60'],
+  ] as const)('S-5 AC-1: the %s message shows in the form', async (code, groupName, label, text) => {
+    const user = setup();
+    await typeInto(user, within(group(groupName)).getByLabelText(label), text);
+    expect(within(group(groupName)).getByText(FIELD_ERROR_TEXT[code])).toBeInTheDocument();
+  });
+
+  it('S-5 AC-1: the per-day cap message shows at the spare time field', async () => {
+    const user = setup();
+    await typeInto(user, spareField(), '481');
+    expect(spareField()).toHaveAccessibleDescription(FIELD_ERROR_TEXT['per-day-over-max']);
+  });
+
+  it('S-5 AC-1: a total of 0 shows its message at the total group', async () => {
+    const user = setup();
+    await typeInto(user, within(group('Total course time')).getByLabelText('Minutes'), '0');
+    expect(within(group('Total course time')).getByText(FIELD_ERROR_TEXT['total-zero'])).toBeInTheDocument();
+  });
+
+  it('S-5 AC-1, S-6 AC-8: a date more than 5 years ahead shows its message (Shift+Page Down moves a year)', async () => {
+    const user = setup();
+    screen.getByLabelText('Due date').focus();
+    await user.keyboard('{Enter}{Shift>}{PageDown}{PageDown}{PageDown}{PageDown}{PageDown}{/Shift}');
+    expect(screen.getByRole('button', { name: 'Wed 26 Nov 2031' })).toHaveFocus(); // exactly 5 years: allowed
+    await user.keyboard('{ArrowRight}{Enter}'); // one day more
+    expect(screen.getByLabelText('Due date')).toHaveAccessibleDescription(FIELD_ERROR_TEXT['date-too-far']);
   });
 });
 
@@ -412,6 +475,16 @@ describe('date picker (S-6 AC-8)', () => {
     await user.keyboard('{Enter}');
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByLabelText('Due date')).toHaveTextContent(LABELS.pickDate);
+  });
+
+  it('S-5 AC-6: Escape back to an empty date field shows no error until the field is left', async () => {
+    const user = setup();
+    screen.getByLabelText('Due date').focus();
+    await user.keyboard('{Enter}{Escape}');
+    expect(screen.getByLabelText('Due date')).toHaveFocus();
+    expect(screen.queryByText(FIELD_ERROR_TEXT['date-invalid'])).not.toBeInTheDocument();
+    await user.tab(); // now the field is left
+    expect(screen.getByLabelText('Due date')).toHaveAccessibleDescription(FIELD_ERROR_TEXT['date-invalid']);
   });
 
   it('S-6 AC-8: the picked day is marked selected in the grid', async () => {

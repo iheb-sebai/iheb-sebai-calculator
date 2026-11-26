@@ -19,7 +19,7 @@ One calculation engine (working days x minutes per day) serves both sides.
 
 ## Stories
 - S-1 (J-1): Remaining time / working days left gives minutes needed per working day, ROUNDED UP.
-- S-2 (J-1): Choose working days (Fri-Sat or Sat-Sun weekend presets, or custom) and see the working days left, today included if it is a working day.
+- S-2 (J-1): Choose working days (Mon–Fri or Sun–Thu presets, that is a Sat–Sun or Fri–Sat weekend, or custom) and see the working days left, today included if it is a working day.
 - S-3 (J-2): Enter the minutes you can spare per day and get the status:
   - On track: needed <= 80% of spare.
   - Tight: needed > 80% and <= 100% of spare.
@@ -43,7 +43,7 @@ One calculation engine (working days x minutes per day) serves both sides.
 - "Today" is passed into the engine (never read from the clock inside it), so tests give the same result on any machine and in any time zone.
 
 ## Tech
-- Vite, React and TypeScript, on Node 20+.
+- Vite, React and TypeScript, on Node 22.12+ (Node 20 is end-of-life, and the current test libraries need Node 22).
 - Vitest for tests, plus Testing Library.
 - The engine is pure functions in src/lib/.
 - Test names carry their story and criterion IDs (e.g. "S-3 AC-2").

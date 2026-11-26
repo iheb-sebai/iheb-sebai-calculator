@@ -3,8 +3,8 @@
 How each acceptance criterion in [user-stories.md](user-stories.md) is checked, and the result.
 
 > **Status: the engine and the UI are built, and every automated check passes. The UI was also driven by script in
-> headless Chromium (desktop, phone, device set to dark mode, keyboard). The checks by hand, including VoiceOver, are not done
-> yet.** A row says "pass" only after the test or check has actually been run.
+> headless Chromium (desktop, phone, device set to dark mode). The keyboard check and the checks by hand, including
+> VoiceOver, are not done yet.** A row says "pass" only after the test or check has actually been run.
 
 ## How to run
 
@@ -35,6 +35,9 @@ npm run dev         # manual checks in the browser
 | S-3 AC-9 (On track talks to the person: "Comfortable: you're using 50% of your spare time.") | `src/lib/format.test.ts`, `src/App.test.tsx` | pass |
 | S-3 AC-10 (pace meter: rounded to the nearest, within half a percent for spare 1–480; marker at the exact share) | `src/lib/format.test.ts`, `src/App.test.tsx` | pass |
 | S-3 AC-11 ("way over" and no bar above a full working day) | `src/lib/format.test.ts`, `src/App.test.tsx` | pass |
+| S-5 AC-1 messages on screen: empty, over 999 hours, minutes over 59, over 480 a day, total of 0, date more than 5 years ahead | `src/App.test.tsx` | pass |
+| S-6 AC-4 on the working days (each toggle marked and linked) | `src/App.test.tsx` | pass |
+| S-6 AC-6 for time done over the total (at the field and in the result) | `src/App.test.tsx` | pass |
 | S-11 listed as not implemented | `src/lib/messages.test.ts` | pass |
 | S-4 AC-1 (start date is today by default) | `src/App.test.tsx` | pass |
 | S-4 AC-2 to AC-5 | `src/lib/admin.test.ts`, `src/App.test.tsx` | pass |
@@ -51,7 +54,7 @@ npm run dev         # manual checks in the browser
 | D-4: engine never reads the clock | `src/lib/noClock.test.ts` | pass |
 | D-4: the app's one clock read gives the local date | `src/today.test.ts` | pass |
 | D-13: Arabic-Indic digits | `src/lib/parse.test.ts` | pass |
-| Same results in every time zone | `npm run test:tz` | pass (all 395 tests, twice) |
+| Same results in every time zone | `npm run test:tz` | pass (all 406 tests, twice) |
 | Fast working-day count matches a day-by-day count (all 127 weekday sets) | `src/lib/workingDays.test.ts` | pass |
 | Production build | `npm run build` | pass |
 
@@ -89,8 +92,7 @@ mistake there fails a test instead of freezing the page.
 |---|---|
 | Every story in a real browser, driven by script (headless Chromium: 1360 px desktop, 390 px phone, device set to dark mode), screenshots checked, fonts load locally, no horizontal scroll at 360 px, no console errors | pass |
 | Every story by hand in the browser (`npm run dev`) | not run |
-| S-6 AC-2: keyboard path by script: Tab reaches the role switch, arrow keys change role, Tab runs top to bottom, Space toggles a day | pass |
-| S-6 AC-2: whole app with the keyboard only, by hand, focus always visible | not run |
+| S-6 AC-2: whole app with the keyboard only, focus always visible | not checked: an earlier scripted run passed, but the layout and the date picker changed after it. To be checked by hand. |
 | S-6 AC-3: VoiceOver announces the result after an edit | not run |
 | S-5 attack pass: paste, very long input, typing quickly while errors show, switching role mid-error | not run (role switch is covered by `src/App.test.tsx`) |
 | S-3 AC-8: statuses readable without colour (greyscale) | not run |
@@ -107,4 +109,11 @@ mistake there fails a test instead of freezing the page.
 - A date can't be typed: it is picked from the calendar, with the mouse or the keyboard (D-15). Moving a year
   takes Shift + Page Down.
 
-More are added after the review phase.
+- Parts of criteria with no automated test (from the final audit):
+  - S-6 AC-7: the phone summary is tested for a learner plan only, not for the admin date or "Already complete".
+  - S-6 AC-8: opening the calendar with Down, Home and closing it with Tab are not tested in the UI (Home's date
+    maths is tested in `calendar.test.ts`; Shift+Page Down is tested).
+  - S-6 AC-4: `aria-invalid` on the date picker field is not tested.
+  - S-2 AC-6: "every day" in a result sentence is tested in `format.test.ts`, not on screen.
+  - Decisions D-2, D-6, D-7, D-10, D-12, D-14 and D-15 are not cited by any test name; most are covered by the
+    story criteria they back (D-2 by S-3 AC-1 to AC-4, D-15 by S-6 AC-8).

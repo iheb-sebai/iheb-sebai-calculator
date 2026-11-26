@@ -140,11 +140,15 @@ describe('the pace meter', () => {
     expect(METER_ZONES.onTrack + METER_ZONES.tight + METER_ZONES.late).toBe(100);
   });
 
-  it('S-3 AC-10: the text reads "15 of your 30 spare min · 50%"', () => {
-    expect(paceMeterText(15, 30)).toBe('15 of your 30 spare min · 50%');
+  it('S-3 AC-10: the text reads "15 min of your 30 min spare · 50%"', () => {
+    expect(paceMeterText(15, 30)).toBe('15 min of your 30 min spare · 50%');
   });
 
-  it('S-3 AC-10: more than a full working day (480 min) is off the scale', () => {
+  it('S-3 AC-10, S-1 AC-5: from 60 minutes up the pace line also shows hours', () => {
+    expect(paceMeterText(400, 480)).toBe('400 min (6 h 40 min) of your 480 min (8 h) spare · 83%');
+  });
+
+  it('S-3 AC-11: more than a full working day (480 min) is off the scale', () => {
     expect(meterIsOffScale(480)).toBe(false);
     expect(meterIsOffScale(481)).toBe(true);
     expect(meterIsOffScale(29_970)).toBe(true);

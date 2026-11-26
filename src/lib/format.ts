@@ -91,7 +91,7 @@ export const METER_ZONES = {
   late: 100 - meterPosition(100),
 };
 
-/** '15 of your 30 spare min · 50%' (S-3 AC-10). */
+/** '15 min of your 30 min spare · 50%', with hours from 60 minutes up (S-3 AC-10, S-1 AC-5). */
 export function paceMeterText(neededPerDay: number, spareMinutesPerDay: number): string {
-  return `${neededPerDay} of your ${spareMinutesPerDay} spare min · ${pacePercent(neededPerDay, spareMinutesPerDay)}%`;
+  return `${formatMinutes(neededPerDay)} of your ${formatMinutes(spareMinutesPerDay)} spare · ${pacePercent(neededPerDay, spareMinutesPerDay)}%`;
 }
