@@ -48,9 +48,9 @@ describe('lateSentence', () => {
 });
 
 describe('adminOptionSentence', () => {
-  it('S-4 AC-2, S-2 AC-6: working days, which days, and the daily minutes', () => {
+  it('S-4 AC-2, S-2 AC-6, S-1 AC-5: working days, which days, and the daily minutes', () => {
     const option = { date: iso('2026-12-02'), workingDayCount: 5, minutesPerDay: 60 };
-    expect(adminOptionSentence(option, monFri)).toBe('5 working days (Mon–Fri) at 60 min a day');
+    expect(adminOptionSentence(option, monFri)).toBe('5 working days (Mon–Fri) at 60 min (1 h) a day');
   });
 
   it('S-4 AC-3: the recommended option shows the lower daily minutes', () => {

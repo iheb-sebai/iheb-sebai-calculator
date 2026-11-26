@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { CALC_ERROR_PLACE, CALC_ERROR_TEXT, FIELD_ERROR_TEXT, STATUS_LABEL, TEXT, type CalcError } from './messages';
 import type { FieldErrorCode } from './parse';
 
-const userStories = readFileSync(new URL('../../docs/user-stories.md', import.meta.url), 'utf8');
+// Line breaks and indentation in the Markdown are collapsed, so a message wrapped across lines still matches.
+const userStories = readFileSync(new URL('../../docs/user-stories.md', import.meta.url), 'utf8').replace(/\s+/g, ' ');
 
 const FIELD_CODES: FieldErrorCode[] = [
   'required',
