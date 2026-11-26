@@ -113,3 +113,13 @@ src/today.ts      the only place the app reads the clock
 docs/             plan, jobs, roles, user stories, verification, design screenshots
 transcripts/      the design-session excerpt and this session's transcript
 ```
+
+## About this submission
+
+- **AI tool and model:** Claude Code with Claude Opus 5.5 (`claude-opus-5-5`).
+- **Code changed by hand:** none.
+- **Assumptions:** today counts if it is a working day; dates use the device's local date; no public holidays;
+  the input caps are 999 h 59 min for course time, 480 min a day for spare or daily learning time, and due and
+  start dates up to 5 years ahead.
+- **Why this calculator:** training deadlines are a real problem for learners and L&D teams using an LMS, and
+  every answer is an exact calculation.
