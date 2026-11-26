@@ -11,6 +11,8 @@ A training-deadline calculator for two kinds of users:
 One calculation engine (working days × minutes per day) serves both. It runs entirely in the browser: no
 backend, accounts, API keys or cloud services.
 
+**Live:** https://iheb-sebai.github.io/iheb-sebai-calculator/
+
 ## Run it
 
 Needs **Node 22.12 or newer** (`.nvmrc` says 22; Node 20 is end-of-life and the test libraries need 22).
@@ -18,7 +20,7 @@ Needs **Node 22.12 or newer** (`.nvmrc` says 22; Node 20 is end-of-life and the 
 ```
 nvm use            # optional, picks Node 22 from .nvmrc
 npm ci             # or npm install
-npm run dev        # http://localhost:5173
+npm run dev        # http://localhost:5173/iheb-sebai-calculator/
 ```
 
 | Command | What it does |
@@ -27,6 +29,9 @@ npm run dev        # http://localhost:5173
 | `npm run test:tz` | The whole suite again in UTC+14 and UTC−10, to show results don't depend on the time zone |
 | `npm run typecheck` | TypeScript, no emit |
 | `npm run build` | Type check and production build into `dist/` |
+
+Every push to `main` runs all the tests (both time-zone runs included), then builds and deploys to GitHub Pages:
+[.github/workflows/deploy.yml](.github/workflows/deploy.yml).
 
 ## Try it
 
@@ -95,7 +100,6 @@ in [docs/verification.md](docs/verification.md).
 - **S-8** several courses with a combined pace, **S-9** public holidays per country, **S-10** calendar (.ics)
   export, **S-11** the timeline from the design preview (it needs a finish date for On track and Tight, which the
   engine only calculates for Late).
-- GitHub Actions and a GitHub Pages URL (optional in the plan).
 
 Known limits, such as dates being picked rather than typed: [docs/verification.md](docs/verification.md#known-limits).
 
