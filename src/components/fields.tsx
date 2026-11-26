@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { LABELS } from '../lib/messages';
 import type { DurationText, FieldId } from '../lib/parse';
+import { StepsIcon } from './icons';
 
 export const errorId = (id: string) => `${id}-error`;
 
@@ -14,6 +15,19 @@ export function FieldMessage({ id, message }: { id: string; message: string | nu
   );
 }
 
+/** A numbered step of the form: "1 Your training". */
+export function Section({ step, title, children }: { step: number; title: string; children: ReactNode }) {
+  const headingId = `step-${step}`;
+  return (
+    <section className="step" aria-labelledby={headingId}>
+      <h2 id={headingId} className="step-title">
+        <span className="step-number">{step}</span> {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
 interface InputProps {
   id: FieldId;
   label: ReactNode;
@@ -21,6 +35,8 @@ interface InputProps {
   error: string | null;
   /** Error id of the surrounding group, so the input also announces it. */
   groupErrorId?: string | null;
+  /** 'inline': a small input with its label after it, as in "[ 7 ] Hours". */
+  layout?: 'stacked' | 'inline';
   onChange: (value: string) => void;
   onTouch: () => void;
 }
@@ -29,22 +45,42 @@ interface InputProps {
  * A text field with a numeric keyboard, not type="number" (D-14): the app gets
  * exactly what was typed, so it can say what is wrong with it.
  */
-export function NumberField({ id, label, value, error, groupErrorId = null, onChange, onTouch }: InputProps) {
-  return (
+export function NumberField({
+  id,
+  label,
+  value,
+  error,
+  groupErrorId = null,
+  layout = 'stacked',
+  onChange,
+  onTouch,
+}: InputProps) {
+  const input = (
+    <input
+      id={id}
+      type="text"
+      inputMode="numeric"
+      autoComplete="off"
+      value={value}
+      aria-invalid={error !== null || groupErrorId !== null}
+      aria-describedby={joinIds(error === null ? null : errorId(id), groupErrorId)}
+      onChange={(event) => onChange(event.target.value)}
+      onFocus={(event) => event.target.select()}
+      onBlur={onTouch}
+    />
+  );
+  return layout === 'inline' ? (
+    <div className="field field-inline">
+      <div className="inline-row">
+        {input}
+        <label htmlFor={id}>{label}</label>
+      </div>
+      <FieldMessage id={id} message={error} />
+    </div>
+  ) : (
     <div className="field">
       <label htmlFor={id}>{label}</label>
-      <input
-        id={id}
-        type="text"
-        inputMode="numeric"
-        autoComplete="off"
-        value={value}
-        aria-invalid={error !== null || groupErrorId !== null}
-        aria-describedby={joinIds(error === null ? null : errorId(id), groupErrorId)}
-        onChange={(event) => onChange(event.target.value)}
-        onFocus={(event) => event.target.select()}
-        onBlur={onTouch}
-      />
+      {input}
       <FieldMessage id={id} message={error} />
     </div>
   );
@@ -85,11 +121,12 @@ export function DurationField({ group, legend, value, messageFor, onChange, onTo
   const groupErrorId = groupError === null ? null : errorId(group);
 
   return (
-    <fieldset className="duration" aria-describedby={groupErrorId ?? undefined}>
+    <fieldset className="group" aria-describedby={groupErrorId ?? undefined}>
       <legend>{legend}</legend>
       <div className="duration-inputs">
         <NumberField
           id={hoursId}
+          layout="inline"
           label={LABELS.hours}
           value={value.hours}
           error={messageFor(hoursId)}
@@ -99,6 +136,7 @@ export function DurationField({ group, legend, value, messageFor, onChange, onTo
         />
         <NumberField
           id={minutesId}
+          layout="inline"
           label={LABELS.minutes}
           value={value.minutes}
           error={messageFor(minutesId)}
@@ -116,10 +154,39 @@ export function DurationField({ group, legend, value, messageFor, onChange, onTo
 export function ResultArea({ children }: { children: ReactNode }) {
   return (
     <section className="result" aria-labelledby="result-heading">
-      <h2 id="result-heading">{LABELS.result}</h2>
-      <div role="status" aria-live="polite" aria-atomic="true">
+      <h2 id="result-heading" className="sr-only">
+        {LABELS.result}
+      </h2>
+      <div className="result-body" role="status" aria-live="polite" aria-atomic="true">
         {children}
       </div>
     </section>
   );
+}
+
+/**
+ * S-6 AC-7: on small screens, a short copy of the result stays at the top while scrolling.
+ * Hidden from screen readers, which hear the result once, from the live region.
+ */
+export function ResultSummary({ children }: { children: ReactNode }) {
+  return children === null ? null : (
+    <div className="summary" aria-hidden="true">
+      {children}
+    </div>
+  );
+}
+
+export function EmptyState({ text }: { text: string }) {
+  return (
+    <div className="empty">
+      <span className="empty-icon">
+        <StepsIcon className="icon" />
+      </span>
+      <p className="empty-text">{text}</p>
+    </div>
+  );
+}
+
+export function ResultError({ text }: { text: string }) {
+  return <p className="result-error">{text}</p>;
 }

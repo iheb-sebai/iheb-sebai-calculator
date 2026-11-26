@@ -29,14 +29,17 @@ each working day left.
   - Working days left: **26** (2 + 5 + 5 + 5 + 5 + 4). Fri 2026-12-25 counts as a working day because v1 has no
     public holidays (D-10).
   - Result: **15 min a day over 26 working days (Mon–Fri)**.
+- **AC-7** Under the plan, the page shows the time left and the public holidays note, for example "390 min (6 h 30
+  min) left. Public holidays are not counted: remove them from your plan yourself." (see [Screen text](#screen-text)).
 
 ## S-2 (J-1): Working days
 
 As a learner, I choose which days I work, and I see how many working days I have left.
 
-- **AC-1** Presets: **Mon–Fri** (the default) and **Sun–Thu**. There is also one checkbox for each of the 7 days.
-- **AC-2** Picking a preset sets the checkboxes. The preset selector always matches the checkboxes: if they match a
-  preset, it shows that preset, otherwise it shows **Custom**.
+- **AC-1** Two preset buttons: **Mon–Fri** (the default) and **Sun–Thu**. There is also one toggle button for each of
+  the 7 days, Mon to Sun.
+- **AC-2** Pressing a preset sets the days. The preset buttons always match the days: the matching preset shows as
+  pressed, and if no preset matches, **Custom** is shown.
 - **AC-3** Working days left = every checked weekday from today to the due date. Both ends are included.
 - **AC-4** Today counts only if it is a checked weekday.
   - Today Thu 2026-11-26, Mon–Fri, due Thu 2026-11-26: **1** working day left.
@@ -64,11 +67,25 @@ As a learner, I enter the minutes I can spare per working day, and I see whether
   - **working days late** = n − working days left.
   - Example: today Thu 2026-11-26, Mon–Fri, due Mon 2026-11-30 (3 working days), 300 min remaining, 50 min spare.
     Needed is 100, so Late. n = 6, finish **Thu 2026-12-03**, **3 working days late**.
+  - On screen this is three lines, with the date large: "At 50 min a day you'll finish on" / "Thu 3 Dec 2026" /
+    "3 working days late".
 - **AC-6** **Spare = 0 is Late, not an error.** The message reads: "At 0 minutes a day you won't finish. Ask for
   learning time or a new due date." No finish date and no days-late number are shown. Nothing shows "Infinity".
-- **AC-7** If spare is left blank, no status is shown and the minutes per working day are still shown. A blank
-  spare field is not an error.
+- **AC-7** If spare is left blank, no status is shown and the minutes per working day are still shown, with the hint
+  "Add the minutes you can spare to see if you're on track." A blank spare field is not an error.
 - **AC-8** The status is written as a word ("On track", "Tight", "Late"), never shown by colour alone.
+- **AC-9** On track and Tight each come with one line of explanation:
+  - On track, with the person's own share from the pace meter: "Comfortable: you're using 50% of your spare
+    time."
+  - Tight: "You need more than 80% of your spare time, so one bad day could make you late."
+- **AC-10** When spare time is more than 0, a pace meter shows the minutes needed as a share of the spare time:
+  "Your pace" and "15 of your 18 spare min · 83%". The percentage is rounded to the nearest whole percent (D-16):
+  15 of 18 is 83.3%, shown as 83%. The bar has three zones marked 0%, 80%, 100% and "over": On track, Tight and
+  Late. A marker shows the exact share, so it always sits in its status's zone, and it stops at the end of the bar
+  past 125%. The bar repeats the status in the panel and the chip, so it is hidden from screen readers; the text
+  line is read.
+- **AC-11** When the minutes needed per day are more than a full working day (480, D-8), for example 999 hours due
+  tomorrow, the pace line reads "way over" instead of a huge percentage, and the bar is hidden.
 
 ## S-4 (J-3): Admin: earliest and recommended due date
 
@@ -160,21 +177,63 @@ Spaces around a number are ignored. Time fields start at "0" rather than blank.
 - **AC-2** The whole app works with the keyboard alone, and keyboard focus is always visible.
 - **AC-3** The result area is a live region (`role="status"`, polite), so screen readers announce changes to it.
 - **AC-4** A field with an error has `aria-invalid="true"`, and its message is linked with `aria-describedby`.
-- **AC-5** The Learner/Admin switch works with the keyboard and shows which role is selected.
+- **AC-5** The Learner/Admin switch is a two-option segmented control built on radio buttons, so it works with the
+  arrow keys and shows which role is selected. The day toggles are checkboxes and the presets are buttons, so Tab,
+  Space and Enter work on them.
 - **AC-6** An error from the checks in S-5 AC-3 is shown next to its field and repeated in the result area, so
   screen readers announce it.
+- **AC-7** On small screens, a short summary of the result (minutes a day and status, or the earliest date) stays at
+  the top while the person scrolls the form. It only repeats the result visually (`aria-hidden`), so screen readers
+  announce the result once, from the live region.
+- **AC-8** Dates are picked from a calendar, not the browser's date field (D-15). The field shows the date
+  ("Thu 31 Dec 2026"), or "Pick a date" when empty, and opens a month calendar, Monday first, with "Previous
+  month" and "Next month" buttons. Today and the picked day are marked; non-working days are lighter but can
+  still be picked (S-2 AC-5). Days before today are greyed out and can't be picked; the arrow keys still pass
+  over them. The "in the past" errors (S-5) stay: a page left open past midnight can still hold yesterday's date. It works with the keyboard alone: Enter or Down opens it on the picked day (else
+  today), arrows move by day and week, Home/End go to the start or end of the week, Page Up/Down change month
+  (with Shift, year), Enter picks, Escape closes; focus then returns to the field. A click outside or Tab out
+  also closes it. The field is a combobox labelled with the field's name; the calendar is a dialog with a grid.
 
 ## S-7 (STRETCH): English / Arabic
 
-English and Arabic, with a right-to-left layout. **Done only if time is left after S-1 to S-6.** All visible
-text comes from one messages file, so adding a language later means adding one table. If it isn't built, the
-README lists it under "Not implemented".
+English and Arabic, with a right-to-left layout. **Status: partly done.**
+
+- Done: Arabic-Indic digits (١٥, ۱۵) are accepted in every number field (D-13), and the header shows the name in
+  Arabic (خطوة).
+- Not done: Arabic text and the right-to-left layout. All visible text comes from `src/lib/messages.ts` and the
+  sentences in `src/lib/format.ts`, so adding Arabic means translating those two files and setting `dir="rtl"`.
 
 ## Not implemented (next)
 
 - **S-8** A list of several courses with a combined pace.
 - **S-9** Public holidays per country.
 - **S-10** Export the study plan to a calendar file (.ics).
+- **S-11** Timeline from today to the finish date and the due date (from the design preview). Not implemented: it
+  needs a finish date for On track and Tight, and the engine only calculates one for Late.
+
+---
+
+## Screen text
+
+Every fixed text on the page, word for word. `src/lib/messages.test.ts` checks that each text in
+`src/lib/messages.ts` appears in this file.
+
+| Where | Text |
+|---|---|
+| Header | Khutwa · خطوة · Training deadlines you can actually meet |
+| Role switch | I am · a learner · an L&D admin |
+| Learner sections | 1 Your training · 2 Deadline and working days · 3 Your time |
+| Admin sections | 1 The course · 2 Start date and working days · 3 Learning time |
+| Fields | Total course time · Time already done · Course time · Hours · Minutes · Due date · Start date · Minutes you can spare per working day (optional) · Daily learning time employees get (minutes per working day) |
+| Working days | Working days · Presets · Mon–Fri · Sun–Thu · Custom · Mon · Tue · Wed · Thu · Fri · Sat · Sun |
+| Date picker (S-6 AC-8) | Pick a date · Previous month · Next month · the month and year, e.g. "December 2026" |
+| Result headings | Result (read by screen readers only) · You need · Earliest due date · Recommended due date |
+| Pace meter (S-3 AC-10, AC-11) | Your pace · 0% · 80% · 100% · over · way over |
+| Under a learner plan | "\<time left\> left. Public holidays are not counted: remove them from your plan yourself." |
+| Under an admin result | Public holidays are not counted: remove them from your plan yourself. |
+
+The empty states, statuses, explanations and error messages are in S-3, S-4 and S-5 above. The result sentences
+are built from the numbers, as in the examples in S-1 to S-4.
 
 ---
 
@@ -198,3 +257,5 @@ Tests cite these decisions by ID when no story criterion covers the rule (e.g. `
 | D-12 | Mon–Fri is the default, and every result names the working days it used | MENA is mixed: Saudi Arabia's weekend is Fri–Sat, while the UAE and Tunisia have Sat–Sun. No default fits everyone, so the result makes the choice visible. |
 | D-13 | Arabic-Indic digits (١٥, ۱۵) are accepted in number fields | Someone typing on an Arabic keyboard shouldn't be told that 15 is not a number. |
 | D-14 | Number fields are text fields with a numeric keyboard, not `type="number"` | Browser number fields hide what was typed: "1e3" arrives as 1000 and letters arrive as blank. The app then couldn't say what is wrong. |
+| D-15 | Dates are picked from the app's own calendar, not the browser's date field | The browser's field looks different in every browser and can't be styled to match the app. The calendar follows the WAI-ARIA date picker pattern, so it keeps full keyboard and screen reader use. |
+| D-16 | The pace meter's percentage is rounded to the nearest whole percent, not up | It describes a share of spare time, not an amount to plan with, so D-1 does not apply: 15 of 18 minutes reads 83%, not 84%. The status still comes from the exact numbers (S-3 AC-4). |

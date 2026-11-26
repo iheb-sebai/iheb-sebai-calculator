@@ -1,26 +1,26 @@
-import { calculateAdmin, type DueDateOption } from '../lib/admin';
+import { calculateAdmin } from '../lib/admin';
 import { formatDisplayDate, type IsoDate } from '../lib/dates';
 import { adminOptionSentence } from '../lib/format';
 import { CALC_ERROR_TEXT, LABELS, TEXT } from '../lib/messages';
 import { parseAdminForm, type AdminFormText, type FieldId } from '../lib/parse';
-import type { WorkingDays } from '../lib/workingDays';
-import { DateField, DurationField, NumberField, ResultArea } from './fields';
+import { DatePicker } from './DatePicker';
+import {
+  DurationField,
+  EmptyState,
+  NumberField,
+  ResultArea,
+  ResultError,
+  ResultSummary,
+  Section,
+} from './fields';
 import { messageFinder, withTouched, type FormState } from './formState';
+import { CalendarIcon } from './icons';
 import { WorkingDaysPicker } from './WorkingDaysPicker';
 
 interface Props {
   state: FormState<AdminFormText>;
   today: IsoDate;
   onChange: (state: FormState<AdminFormText>) => void;
-}
-
-function DueDate({ option, workingDays }: { option: DueDateOption; workingDays: WorkingDays }) {
-  return (
-    <>
-      <p className="headline">{formatDisplayDate(option.date)}</p>
-      <p>{adminOptionSentence(option, workingDays)}</p>
-    </>
-  );
 }
 
 export function AdminForm({ state, today, onChange }: Props) {
@@ -34,61 +34,89 @@ export function AdminForm({ state, today, onChange }: Props) {
   const calc = parsed.ok ? calculateAdmin(parsed.value) : null;
   const calcError = calc !== null && !calc.ok ? calc.error : null;
   const messageFor = messageFinder(parsed.ok ? [] : parsed.error, calcError, state.touched);
+  const value = calc !== null && calc.ok ? calc.value : null;
 
   return (
     <div className="calculator">
+      <ResultSummary>
+        {value?.kind === 'dates' ? (
+          <>
+            <span className="summary-label">{LABELS.earliest}</span>{' '}
+            <strong>{formatDisplayDate(value.earliest.date)}</strong>
+          </>
+        ) : null}
+      </ResultSummary>
+
       <div className="inputs">
-        <DurationField
-          group="course"
-          legend={LABELS.courseTime}
-          value={text.course}
-          messageFor={messageFor}
-          onChange={(course, field) => edit({ course }, [field, 'course'])}
-          onTouch={touch}
-        />
-        <NumberField
-          id="daily"
-          label={LABELS.daily}
-          value={text.daily}
-          error={messageFor('daily')}
-          onChange={(daily) => edit({ daily }, ['daily'])}
-          onTouch={() => touch(['daily'])}
-        />
-        <DateField
-          id="startDate"
-          label={LABELS.startDate}
-          value={text.startDate}
-          error={messageFor('startDate')}
-          onChange={(startDate) => edit({ startDate }, ['startDate'])}
-          onTouch={() => touch(['startDate'])}
-        />
-        <WorkingDaysPicker
-          value={text.workingDays}
-          error={messageFor('workingDays')}
-          onChange={(workingDays) => edit({ workingDays }, ['workingDays'])}
-        />
+        <Section step={1} title={LABELS.sectionCourse}>
+          <DurationField
+            group="course"
+            legend={LABELS.courseTime}
+            value={text.course}
+            messageFor={messageFor}
+            onChange={(course, field) => edit({ course }, [field, 'course'])}
+            onTouch={touch}
+          />
+        </Section>
+        <Section step={2} title={LABELS.sectionStart}>
+          <DatePicker
+            id="startDate"
+            label={LABELS.startDate}
+            value={text.startDate}
+            today={today}
+            workingDays={text.workingDays}
+            error={messageFor('startDate')}
+            onChange={(startDate) => edit({ startDate }, ['startDate'])}
+            onTouch={() => touch(['startDate'])}
+          />
+          <WorkingDaysPicker
+            value={text.workingDays}
+            error={messageFor('workingDays')}
+            onChange={(workingDays) => edit({ workingDays }, ['workingDays'])}
+          />
+        </Section>
+        <Section step={3} title={LABELS.sectionLearningTime}>
+          <NumberField
+            id="daily"
+            layout="inline"
+            label={LABELS.daily}
+            value={text.daily}
+            error={messageFor('daily')}
+            onChange={(daily) => edit({ daily }, ['daily'])}
+            onTouch={() => touch(['daily'])}
+          />
+        </Section>
       </div>
 
       <ResultArea>
-        {!parsed.ok || calc === null ? (
-          <p>{TEXT.adminEmpty}</p>
+        {calc === null ? (
+          <EmptyState text={TEXT.adminEmpty} />
         ) : !calc.ok ? (
-          <p className="result-error">{CALC_ERROR_TEXT[calc.error]}</p>
+          <ResultError text={CALC_ERROR_TEXT[calc.error]} />
         ) : calc.value.kind === 'no-time' ? (
-          <p className="headline">{TEXT.adminNoTime}</p>
+          <p className="message message-late">{TEXT.adminNoTime}</p>
         ) : (
           <>
-            <h3>{LABELS.earliest}</h3>
-            <DueDate option={calc.value.earliest} workingDays={text.workingDays} />
-            <h3>{LABELS.recommended}</h3>
-            {calc.value.recommended === null ? (
-              <p>{TEXT.noRecommended}</p>
-            ) : (
-              <>
-                <DueDate option={calc.value.recommended} workingDays={text.workingDays} />
-                <p className="note">{TEXT.recommendedExplainer}</p>
-              </>
-            )}
+            <h3 className="eyebrow">{LABELS.earliest}</h3>
+            <p className="hero-date" key={calc.value.earliest.date}>
+              {formatDisplayDate(calc.value.earliest.date)}
+            </p>
+            <p className="hero-detail">{adminOptionSentence(calc.value.earliest, text.workingDays)}</p>
+            <div className="message message-info">
+              <h3 className="message-title">
+                <CalendarIcon />
+                {LABELS.recommended}
+              </h3>
+              {calc.value.recommended === null ? (
+                <p>{TEXT.noRecommended}</p>
+              ) : (
+                <>
+                  <p className="finish-date">{formatDisplayDate(calc.value.recommended.date)}</p>
+                  <p>{adminOptionSentence(calc.value.recommended, text.workingDays)}</p>
+                  <p className="message-note">{TEXT.recommendedExplainer}</p>
+                </>
+              )}
+            </div>
             <p className="note">{LABELS.noHolidays}</p>
           </>
         )}

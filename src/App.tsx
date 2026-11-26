@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AdminForm } from './components/AdminForm';
 import type { FormState } from './components/formState';
+import { StepsIcon } from './components/icons';
 import { LearnerForm } from './components/LearnerForm';
 import type { IsoDate } from './lib/dates';
 import { LABELS } from './lib/messages';
@@ -36,27 +37,54 @@ export function App({ today: fixedToday }: { today?: IsoDate }) {
   }));
 
   return (
-    <main className="app">
-      <header>
-        <h1>{LABELS.appTitle}</h1>
-        <p className="tagline">{LABELS.appTagline}</p>
+    <div className="page">
+      <header className="masthead">
+        <div className="brand">
+          <span className="logo">
+            <StepsIcon className="logo-icon" />
+          </span>
+          <div className="brand-text">
+            <h1 className="brand-name">
+              {LABELS.appTitle}{' '}
+              <span className="brand-ar" lang="ar" dir="rtl">
+                {LABELS.appTitleArabic}
+              </span>
+            </h1>
+            <p className="brand-tagline">{LABELS.appTagline}</p>
+          </div>
+        </div>
+
+        {/* S-6 AC-5: a segmented control built on real radio buttons, so arrow keys work. */}
+        <fieldset className="segmented">
+          <legend className="sr-only">{LABELS.roleQuestion}</legend>
+          <span className="segmented-label" aria-hidden="true">
+            {LABELS.roleQuestion}
+          </span>
+          <div className="segments">
+            {ROLES.map(({ role: value, label }) => (
+              <label key={value} className="segment">
+                <input
+                  type="radio"
+                  className="segment-input"
+                  name="role"
+                  value={value}
+                  checked={role === value}
+                  onChange={() => setRole(value)}
+                />
+                <span className="segment-label">{label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
       </header>
 
-      <fieldset className="role-switch">
-        <legend>{LABELS.roleQuestion}</legend>
-        {ROLES.map(({ role: value, label }) => (
-          <label key={value}>
-            <input type="radio" name="role" value={value} checked={role === value} onChange={() => setRole(value)} />
-            {label}
-          </label>
-        ))}
-      </fieldset>
-
-      {role === 'learner' ? (
-        <LearnerForm state={learner} today={today} onChange={setLearner} />
-      ) : (
-        <AdminForm state={admin} today={today} onChange={setAdmin} />
-      )}
-    </main>
+      <main className="app">
+        {role === 'learner' ? (
+          <LearnerForm state={learner} today={today} onChange={setLearner} />
+        ) : (
+          <AdminForm state={admin} today={today} onChange={setAdmin} />
+        )}
+      </main>
+    </div>
   );
 }

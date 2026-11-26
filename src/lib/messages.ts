@@ -49,8 +49,8 @@ export const STATUS_LABEL: Readonly<Record<PaceStatus, string>> = {
   late: 'Late',
 };
 
-export const STATUS_DETAIL: Readonly<Record<'on-track' | 'tight', string>> = {
-  'on-track': 'You need 80% or less of your spare time.',
+/** On track is a sentence with the person's own percentage: onTrackSentence in format.ts. */
+export const STATUS_DETAIL: Readonly<Record<'tight', string>> = {
   tight: 'You need more than 80% of your spare time, so one bad day could make you late.',
 };
 
@@ -63,15 +63,23 @@ export const TEXT = {
   adminNoTime: "At 0 minutes a day employees can't finish. Give them learning time to get a due date.",
   noRecommended: 'Not available at 1 minute a day. Raise the daily time to get a date with a margin.',
   recommendedExplainer: 'Keeps the daily pace to 80% or less of the time you give.',
+  addSpareHint: "Add the minutes you can spare to see if you're on track.",
 };
 
-/** Labels and headings on the page. */
+/** Labels and headings on the page. Each one is listed in "Screen text" in docs/user-stories.md. */
 export const LABELS = {
   appTitle: 'Khutwa',
+  appTitleArabic: 'خطوة',
   appTagline: 'Training deadlines you can actually meet',
   roleQuestion: 'I am',
   roleLearner: 'a learner',
   roleAdmin: 'an L&D admin',
+  sectionTraining: 'Your training',
+  sectionDeadline: 'Deadline and working days',
+  sectionTime: 'Your time',
+  sectionCourse: 'The course',
+  sectionStart: 'Start date and working days',
+  sectionLearningTime: 'Learning time',
   totalTime: 'Total course time',
   doneTime: 'Time already done',
   courseTime: 'Course time',
@@ -79,15 +87,26 @@ export const LABELS = {
   minutes: 'Minutes',
   dueDate: 'Due date',
   startDate: 'Start date',
+  pickDate: 'Pick a date',
+  previousMonth: 'Previous month',
+  nextMonth: 'Next month',
   spare: 'Minutes you can spare per working day (optional)',
   daily: 'Daily learning time employees get (minutes per working day)',
   workingDays: 'Working days',
-  preset: 'Preset',
+  presets: 'Presets',
   presetMonFri: 'Mon–Fri',
   presetSunThu: 'Sun–Thu',
   presetCustom: 'Custom',
   result: 'Result',
+  youNeed: 'You need',
+  yourPace: 'Your pace',
+  meterStart: '0%',
+  meterTight: '80%',
+  meterLate: '100%',
+  meterOver: 'over',
+  wayOver: 'way over',
   earliest: 'Earliest due date',
   recommended: 'Recommended due date',
+  left: 'left.',
   noHolidays: 'Public holidays are not counted: remove them from your plan yourself.',
 };
