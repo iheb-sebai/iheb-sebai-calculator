@@ -70,4 +70,3 @@ One Claude Code session does both the planning and the building. Every prompt is
 - 0:40-2:30: tests and build
 - 2:30-3:15: review, attack pass, accessibility
 - 3:15-4:00: README, verification, export, push
-- Then: Claude (this chat) checks the package, and you send the email
