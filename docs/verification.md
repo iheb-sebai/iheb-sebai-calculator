@@ -2,8 +2,8 @@
 
 How each acceptance criterion in [user-stories.md](user-stories.md) is checked, and the result.
 
-> **Status: the calculation engine (`src/lib/`) is built and tested. The form parser and the UI are not built
-> yet.** A row says "pass" only after the test or manual check has actually been run.
+> **Status: the engine and the UI are built, and every automated check passes. The manual checks in the browser
+> have not been done yet.** A row says "pass" only after the test or manual check has actually been run.
 
 ## How to run
 
@@ -19,27 +19,33 @@ npm run dev         # manual checks in the browser
 | Criterion | Test file | Status |
 |---|---|---|
 | S-1 AC-1 to AC-4, AC-6 | `src/lib/learner.test.ts` | pass |
-| S-1 AC-5 (times shown in hours and minutes) | `src/lib/format.test.ts` | not run |
+| S-1 AC-4, AC-6 on screen | `src/App.test.tsx` | pass |
+| S-1 AC-5 (times shown in hours and minutes) | `src/lib/format.test.ts` | pass |
 | S-1 AC-6 (26 working days) | `src/lib/workingDays.test.ts` | pass |
 | S-2 AC-1, AC-2 (presets and matching) | `src/lib/workingDays.test.ts` | pass |
-| S-2 AC-1, AC-2 (the picker on screen) | `src/components/WorkingDaysPicker.test.tsx` | not run |
+| S-2 AC-1, AC-2 (the picker on screen) | `src/App.test.tsx` | pass |
 | S-2 AC-3 to AC-5 | `src/lib/workingDays.test.ts`, `src/lib/learner.test.ts` | pass |
-| S-2 AC-6 (label text) | `src/lib/workingDays.test.ts` | pass |
-| S-2 AC-6 (label in the result sentence) | `src/components/App.test.tsx` | not run |
+| S-2 AC-6 (label text and sentences) | `src/lib/workingDays.test.ts`, `src/lib/format.test.ts` | pass |
+| S-2 AC-6 (label in the result on screen) | `src/App.test.tsx` | pass |
 | S-3 AC-1 to AC-7 | `src/lib/learner.test.ts` | pass |
 | S-3 AC-3 (Late exactly when spare × working days left < remaining, swept) | `src/lib/learner.test.ts` | pass |
-| S-4 AC-1 (start date is today by default) | `src/components/App.test.tsx` | not run |
-| S-4 AC-2 to AC-5 | `src/lib/admin.test.ts` | pass |
+| S-3 AC-1, AC-2, AC-5, AC-6 on screen | `src/App.test.tsx` | pass |
+| S-3 AC-8 (status is a word) | `src/lib/messages.test.ts` | pass |
+| S-4 AC-1 (start date is today by default) | `src/App.test.tsx` | pass |
+| S-4 AC-2 to AC-5 | `src/lib/admin.test.ts`, `src/App.test.tsx` | pass |
 | S-4 AC-6 (rules across both roles, all 127 working-day choices) | `src/lib/admin.test.ts` | pass |
-| S-5 input rules (numbers) | `src/lib/parse.test.ts` | not run |
-| S-5 input rules (a real calendar date) | `src/lib/dates.test.ts` | pass |
+| S-5 input rules | `src/lib/parse.test.ts`, `src/lib/dates.test.ts` | pass |
+| S-5 messages are the docs' wording, word for word | `src/lib/messages.test.ts` | pass |
 | S-5 AC-1, AC-3, AC-5 (engine) | `src/lib/learner.test.ts`, `src/lib/admin.test.ts` | pass |
-| S-5 AC-1, AC-2, AC-4, AC-6, AC-7 (on screen) | `src/components/App.test.tsx` | not run |
-| S-6 AC-1, AC-3 to AC-5 | `src/components/App.test.tsx` | not run |
+| S-5 AC-1, AC-2, AC-4 to AC-7 (on screen) | `src/App.test.tsx` | pass |
+| S-6 AC-1, AC-3 to AC-6 | `src/App.test.tsx` | pass |
 | D-4, D-9, D-11 | `src/lib/dates.test.ts` | pass |
-| Engine never reads the clock | `src/lib/noClock.test.ts` | not run |
-| Same results in every time zone | `npm run test:tz` | pass (engine tests) |
+| D-4: engine never reads the clock | `src/lib/noClock.test.ts` | pass |
+| D-4: the app's one clock read gives the local date | `src/today.test.ts` | pass |
+| D-13: Arabic-Indic digits | `src/lib/parse.test.ts` | pass |
+| Same results in every time zone | `npm run test:tz` | pass (all 304 tests, twice) |
 | Fast working-day count matches a day-by-day count (all 127 weekday sets) | `src/lib/workingDays.test.ts` | pass |
+| Production build | `npm run build` | pass |
 
 ## Planted-bug checks
 
@@ -57,6 +63,14 @@ file was restored.
 | Working days late off by one | 3 |
 | Recommended date at 100% of the daily time instead of 80% | 4 |
 | Admin working days rounded down, giving a date that can't be met | 4 |
+| A message reworded away from the docs | 1 |
+| Decimals like 1.5 accepted | 2 |
+| 5-year date limit one day short | 1 |
+| A total time of 0 accepted | 1 |
+| `Date.now()` and `new Date()` added to two engine files | 2 (the clock guard) |
+| Result area not a live region | 1 |
+| Errors shown before a field is touched | 2 |
+| An engine error not repeated in the result area | 3 |
 
 The `nthWorkingDay` bug first sent the function into an endless loop. Its last step is now capped at 7 days, so a
 mistake there fails a test instead of freezing the page.
@@ -65,14 +79,17 @@ mistake there fails a test instead of freezing the page.
 
 | Check | Status |
 |---|---|
+| Every story by hand in the browser (`npm run dev`) | not run |
 | S-6 AC-2: whole app with the keyboard only, focus always visible | not run |
 | S-6 AC-3: VoiceOver announces the result after an edit | not run |
-| S-5 attack pass: paste, very long input, typing quickly while errors show, switching role mid-error | not run |
+| S-5 attack pass: paste, very long input, typing quickly while errors show, switching role mid-error | not run (role switch is covered by `src/App.test.tsx`) |
 | S-3 AC-8: statuses readable without colour (greyscale) | not run |
 
 ## Known limits
 
 - The 80% check uses whole numbers (S-3 AC-4). No floating-point version of it gave a wrong answer for any spare
   time from 1 to 480, so this is a safeguard rather than a fix for a bug that was seen.
+- The admin start date is set to today when the page opens. If the page stays open past midnight, it shows "The
+  start date can't be before today." until the date is changed.
 
 More are added after the review phase.
