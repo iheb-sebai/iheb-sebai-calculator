@@ -7772,3 +7772,402 @@
 
   VoiceOver stays marked "not run", as you asked. The repository has no remote,
   so nothing has been pushed; say if you want to add one.
+
+[Some exchanges in this part of the session were left out, including requests
+about editing the transcripts and the project's history, and personal account
+settings. Everything shown is word for word.]
+
+❯ keyboard checked all good
+
+⏺ I'll record your keyboard check in docs/verification.md as checked by hand by
+  you, and update the README line that said it wasn't checked. VoiceOver stays
+  "not run".
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+⏺ Bash(sed -n 5,8p docs/verification.md; sed -n 86,89p README.md)
+  ⎿  (No output)
+
+⏺ Bash(python3 - <<'PY'
+      def edit(p, pairs):…)
+  ⎿  (No output)
+
+⏺ Recorded. I've marked your keyboard check as a pass, done by hand.
+
+  - docs/verification.md: the S-6 AC-2 row now reads "pass: checked by hand by
+    the author on 26 Nov 2026, on the current UI (with the date picker)". The
+    status line says the keyboard check was done by hand and passed, and that
+    VoiceOver isn't checked yet. The VoiceOver row stays "not run".
+  - README.md: the accessibility section now says the keyboard check was done by
+    hand and VoiceOver isn't checked yet.
+
+  Three files are waiting to be committed: these two, plus the redacted
+  transcripts/session-01.md. Should I commit them together?
+
+❯ commit everything  commit name before you commit.
+
+⏺ Here's the commit I'd make. Nothing is committed until you approve it.
+
+  Files (3):
+  - transcripts/session-01.md: new, the redacted session transcript
+  - docs/verification.md: keyboard check recorded as passed by hand
+  - README.md: accessibility line updated to match
+
+  Commit name:
+
+  Add the session transcript and record the keyboard check
+
+  Commit body:
+
+  transcripts/session-01.md: this session's transcript, which the README
+  and docs/plan.md point to.
+
+  docs/verification.md and README.md: S-6 AC-2 (whole app with the
+  keyboard only, focus always visible) checked by hand by the author on
+  26 Nov 2026 on the current UI, and passed. VoiceOver is still not run.
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+  Should I commit with this name, or change it first?
+
+❯ go
+
+⏺ Bash(git add transcripts/session-01.md docs/verification.md README.md && git
+      status --short && git commit -q -F - <<'EOF'
+      Add the session transcript and record the k…)
+  ⎿  (No output)
+
+⏺ Committed as 001db07, "Add the session transcript and record the keyboard
+  check". It includes the transcript, the keyboard record in verification.md and
+  the README update. Nothing is left uncommitted.
+
+  Two things are still open:
+
+  - VoiceOver is still marked "not run".
+  - Pushing: the repository still has no remote. To push, give me the URL of an
+    empty repository you've created, or run gh auth login in your own terminal
+    and tell me whether the repository should be public or private.
+
+❯ add a short section to the readme with:
+
+  ai tool and model: claude code with [exact model name]
+  code changed by hand: none
+  assumptions: today counts if it's a working day, dates use the device's local
+  date, no public holidays, the caps (999 h 59 min, 480 min a day, 5 years
+  ahead)
+  why this calculator: training deadlines are a real problem for learners and
+  l&d teams using an lms, and every answer is an exact calculation
+  then commit and push
+
+⏺ I'll add the section at the end of the README. For the model, the exact name
+  is Claude Opus 5.5 (model ID claude-opus-5-5), the model this session runs on.
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+⏺ Bash(cat >> README.md <<'EOF'…)
+  ⎿  (No output)
+  ⎿  (timeout 2m)
+
+⏺ I added an "About this submission" section at the end of the README, committed
+  it as 6ed4e32 and pushed it. Your local copy and GitHub are in sync.
+
+  ## About this submission
+
+  - AI tool and model: Claude Code with Claude Opus 5.5 (`claude-opus-5-5`).
+  - Code changed by hand: none.
+  - Assumptions: today counts if it is a working day; dates use the device's
+  local date; no public holidays;
+    the input caps are 999 h 59 min for course time, 480 min a day for spare or
+  daily learning time, and due and
+    start dates up to 5 years ahead.
+  - Why this calculator: training deadlines are a real problem for learners and
+  L&D teams using an LMS, and
+    every answer is an exact calculation.
+
+  Claude Opus 5.5 is the model this whole session ran on. "Code changed by hand:
+  none" is your statement, and the history agrees: every code change was made
+  in this session.
+
+❯ fix the docs to match the brief's format exactly:
+
+  every story gets "As a [role], I want [capability], so that [benefit]" and an
+  explicit status: Implemented or Not implemented
+  acceptance criteria as Given / when / then
+  roles in the form "A [role] is … They can … They must never …"
+  each story traces to one job; for S-6 accessibility and S-7 to S-11, link
+  each to the job it really serves don't change the app, run all tests, commit
+
+⏺ The rewrite has to keep a few things intact, because tests depend on them:
+  - AC numbers stay as they are, since the tests and verification.md cite them.
+  - The message and screen-text tables stay word for word, since a test checks
+    every label and message against this file.
+  - S-11 stays under "Not implemented (next)", which another test checks.
+
+  Here's how each story will trace to one job:
+
+  ┌─────────────────────────────┬────────────────────────────────────┐
+  │             Job             │              Stories               │
+  ├─────────────────────────────┼────────────────────────────────────┤
+  │ J-1 (learner: daily amount) │ S-1, S-2, S-5, S-6, S-7, S-8, S-10 │
+  ├─────────────────────────────┼────────────────────────────────────┤
+  │ J-2 (learner: how late)     │ S-3, S-11                          │
+  ├─────────────────────────────┼────────────────────────────────────┤
+  │ J-3 (admin: due date)       │ S-4, S-9                           │
+  └─────────────────────────────┴────────────────────────────────────┘
+
+  The reasoning for the stories you asked about:
+  - S-6 accessibility → J-1: learners are the broad workforce, so they're the
+    ones most likely to need a keyboard or screen reader.
+  - S-7 Arabic → J-1: Arabic serves learners reading their daily amount.
+  - S-9 holidays → J-3: a holiday can make an admin's date unachievable.
+  - S-11 timeline → J-2: it shows how late you'll be.
+
+  S-7 becomes Not implemented, since only Arabic digits exist, not Arabic text
+  or layout. First I'll check how the current docs are laid out.
+
+⏺ Bash(grep -rn "user-stories.md#\|app-roles.md#\|jobs-to-be-done.md#" README.md
+      docs | cut -c1-150; echo "---"; sed -n 1,12p docs/jobs-to-be-done.md;
+      grep -n "^## \|^…)
+  ⎿  (No output)
+
+⏺ I'm rebuilding the stories file with a script that copies the tables and
+  screen-text sections over unchanged, so the tests' checks can't drift. Only
+  the story text gets rewritten. · summary
+
+⏺ Bash(S=/private/tmp/claude-501/-Users-macmini/51ab0805-957b-403d-874e-f3e689e5
+      d1f9/scratchpad && cp docs/user-stories.md $S/user-stories.before.md &&
+      python3 - <<'PY…)
+  ⎿  (No output)
+
+⏺ The copied tables still use the old ### heading level, so I'm changing them to
+  #### to sit under S-5, then updating the roles file, jobs file, and README
+  link to S-7. · summary
+
+⏺ Bash(python3 - <<'PY'
+      def edit(p, pairs):…)
+  ⎿  (No output)
+⏺ Roles, jobs and the README are updated; next I'm checking that every
+  acceptance-criterion ID, story line, job and status survives intact, and I'll
+  note in verification.md that S-7 to S-11 aren't implemented. · summary
+
+⏺ Bash(S=/private/tmp/claude-501/-Users-macmini/51ab0805-957b-403d-874e-f3e689e5
+      d1f9/scratchpad && python3 - "$S/user-stories.before.md" <<'PY'
+      import re, sys…)
+  ⎿  (No output)
+
+⏺ All 45 criteria kept their IDs, and every story has its job, status and "As a…
+  I want… so that…" line. The three "not in Given/when/then form" flags look
+  like false alarms from my checker, so I'll recheck with whitespace normalised.
+  · summary
+
+⏺ Bash(python3 - <<'PY'
+      import re…)
+  ⎿  (No output)
+  ⎿  (timeout 5m)
+
+⏺ All 406 tests pass and the 50 criteria are in Given/when/then form, with the
+  three flagged items confirmed as my checker's doing and no app files changed.
+  I'm committing now. · summary
+
+⏺ Bash(git add README.md docs && git status --short && git commit -q -F -
+      <<'EOF'
+      Put the docs in the brief's format…)
+  ⎿  (No output)
+
+⏺ The docs now follow the brief's format, committed as 69beffb. All 406 tests
+  pass, including both time-zone runs, and no app file changed. It isn't pushed
+  yet; your local copy is one commit ahead of GitHub.
+
+  Stories (docs/user-stories.md)
+  - The brief's format: every story reads "As a [role], I want [capability], so
+    that [benefit]", traces to one job, and has a status. S-1 to S-6 are
+    Implemented and S-7 to S-11 Not implemented.
+  - S-7 is now "Not implemented". It was "partly done", but only the Arabic
+    digits exist, not Arabic text or the right-to-left layout.
+  - Criteria: all 50 are written as Given / when / then. The 45 existing
+    criteria kept their IDs and order, so the tests and verification.md still
+    point to the right ones. S-7 to S-11 each got one planned criterion.
+  - Unchanged word for word: the input rules, the messages, the screen text and
+    the decisions. The tests that check them still pass.
+
+  Jobs. I linked each story to the job it serves:
+
+  Job: J-1 daily amount
+  Stories: S-1, S-2, S-5, S-6, S-7, S-8, S-10
+  Why for the ones you asked about: S-6: learners are the broad workforce, so
+    they most often need a keyboard or screen reader. S-7: Arabic serves
+    learners reading their daily amount. S-10: the daily amount goes into
+    their calendar.
+  ────────────────────────────────────────
+  Job: J-2 how late
+  Stories: S-3, S-11
+  Why for the ones you asked about: S-11: the timeline shows the gap between
+    finish and due date.
+  ────────────────────────────────────────
+  Job: J-3 admin due date
+  Stories: S-4, S-9
+  Why for the ones you asked about: S-9: a holiday can make an admin's date
+    unachievable.
+
+  S-5 (errors) and S-6 (accessibility) apply to both roles, so their stories
+  start "As a learner or an L&D admin…". If you'd rather name one role there,
+  tell me.
+
+  Other docs
+  - app-roles.md: both roles now read "A … is … They can … They must never …".
+  - jobs-to-be-done.md: a table of the stories each job serves.
+  - README and verification.md: updated for S-7's new status, and they note that
+    S-7 to S-11 have no tests.
+
+  Should I push it?
+
+❯ yes
+
+⏺ Bash(git push origin main 2>&1 | tail -1 && git status -sb | head -1 && echo
+      "local $(git rev-parse --short main) / GitHub $(git ls-remote origin
+      refs/heads/main | c…)
+  ⎿  (No output)
+  ⎿  (timeout 2m)
+
+⏺ It's pushed: GitHub's main and your local copy are both at 69beffb, the docs
+  rewrite, and nothing is waiting to be committed or pushed.
+
+❯ did the keyboard check by hand: tab goes through everything top to bottom and
+  i can always see the focus. arrows switch learner and admin. i opened the
+  calendar with enter, moved with the arrows, picked a date with enter, and
+  escape closes it with focus back on the date field. space toggles the days
+  and enter works on the presets. no problems found. record it in
+  verification.md
+
+⏺ Bash(python3 - <<'PY'
+      p='docs/verification.md'; s=open(p, encoding='utf-8').read()…)
+  ⎿  (No output)
+
+⏺ I've recorded the keyboard check in docs/verification.md. The S-6 AC-2 row
+  stays a pass, now with exactly what you checked:
+
+  ▎ Pass: checked by hand by the author on 26 Nov 2026, on the current UI. Tab
+  ▎ goes through every control top to bottom and focus is always visible; the
+  ▎ arrow keys switch between learner and admin; the calendar opens with Enter,
+  ▎ the arrow keys move the day, Enter picks a date, and Escape closes it with
+  ▎ focus back on the date field; Space toggles the days and Enter works on the
+  ▎ presets. No problems found.
+
+  Opening the calendar with ↓, Home/End and Page Up/Down weren't part of your
+  check. They stay listed where they were, and VoiceOver is still "not run".
+
+  The change isn't committed yet. Should I commit and push it?
+
+❯ two things
+  the reason for s-6 is wrong, accessibility isn't about which group is bigger,
+  an admin using a screen reader needs it just as much as a learner
+  and s-5 and s-6 say "learner or admin" but are linked only to j-1, a learner
+  job, that breaks the rule that each story serves one job of one role
+  split them: s-5 and s-6 for the learner linked to j-1, and new admin versions
+  linked to j-3, keep the criteria ids the tests use and don't change the app
+  run all tests and commit
+
+⏺ You're right on both points. Accessibility is about each person's needs, not
+  which group is bigger, and a story whose role is "learner or admin" can't
+  serve one role's job. I'll split them like this:
+
+  - S-5 and S-6 become learner-only, linked to J-1. They keep every criterion ID
+    the tests use (S-5 AC-1 to AC-7, S-6 AC-1 to AC-8).
+  - S-12, admin: clear errors and S-13, admin: accessibility are new, linked to
+    J-3, with their own criteria.
+
+  The input rules and messages tables serve both forms, so they move to a shared
+  section that both S-5 and S-12 point to.
+
+  One thing you should know: some tests check admin-only behaviour but are named
+  after S-5 or S-6, for example "S-5 AC-3: no working day selected comes before
+  a past start date" (admin). After the split those names would point to a
+  learner story. So I'll change only those test titles to cite S-12 or S-13.
+  Their code and every learner ID stay unchanged.
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+⏺ Renames are confined to admin-side tests (admin.test.ts, parseAdminForm in
+  parse.test.ts, four titles in App.test.tsx, three in messages.test.ts); I'm
+  moving on to the docs next. · summary
+
+⏺ Bash(S=/private/tmp/claude-501/-Users-macmini/51ab0805-957b-403d-874e-f3e689e5
+      d1f9/scratchpad && cp docs/user-stories.md $S/user-stories.before-split.md
+      && python3 -…)
+  ⎿  (No output)
+
+⏺ The stories are split. Next, renaming the admin-side test titles to cite S-12
+  or S-13, without touching any test code:
+
+⏺ Bash(S=/private/tmp/claude-501/-Users-macmini/51ab0805-957b-403d-874e-f3e689e5
+      d1f9/scratchpad && mkdir -p $S/tests-before && cp src/lib/admin.test.ts
+      src/lib/parse.t…)
+  ⎿  (No output)
+
+⏺ Only the titles changed, including one describe(…) group title in
+  admin.test.ts. Next I'm checking which verification.md rows mention S-5 or
+  S-6, so I can add rows for S-12 and S-13. · summary
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+⏺ Admin coverage is mapped to the tests: S-12 AC-1 and AC-3 sit in
+  admin.test.ts, and the remaining criteria are covered by tests on the learner
+  form or noted as untested, with the role switch recorded as passed while the
+  admin form's tab order stays unreported. · summary
+
+⏺ Bash(python3 - <<'PY'
+      def edit(p, pairs):…)
+  ⎿  (No output)
+  ⎿  (timeout 5m)
+
+⏺ All checks pass and the tests are green in all three time-zone runs; the four
+  changed files only had their test titles renamed. I'm committing now, along
+  with your keyboard-check record. · summary
+
+⏺ Bash(git diff --stat -- src | head -5 && git add README.md docs src && git
+      status --short && git commit -q -F - <<'EOF'
+      Split the shared error and accessibility stor…)
+  ⎿  (No output)
+
+⏺ The stories are split by role and committed as 9830bf5. All 406 tests pass,
+  including both time-zone runs, and no app code changed. It isn't pushed yet.
+
+  Stories
+
+  ┌───────────────────────────────────────────┬───────────┬───────────┐
+  │                   Story                   │   Role    │    Job    │
+  ├───────────────────────────────────────────┼───────────┼───────────┤
+  │ S-5 Clear errors, no crash, and recovery  │ learner   │ J-1       │
+  ├───────────────────────────────────────────┼───────────┼───────────┤
+  │ S-6 Accessibility                         │ learner   │ J-1       │
+  ├───────────────────────────────────────────┼───────────┼───────────┤
+  │ S-12 Clear errors, no crash, and recovery │ L&D admin │ J-3 (new) │
+  ├───────────────────────────────────────────┼───────────┼───────────┤
+  │ S-13 Accessibility                        │ L&D admin │ J-3 (new) │
+  └───────────────────────────────────────────┴───────────┴───────────┘
+
+  - S-5 and S-6 keep all their criterion IDs. Only their admin parts moved into
+    S-12 and S-13: the admin check order, the admin empty state, the start-date
+    error, the admin form's labels and the start-date calendar.
+  - Accessibility now serves each role's own job. An admin using a screen reader
+    gets S-13, linked to the admin's job.
+  - Every story now names a single role, and each role matches its job. All 65
+    criteria are in Given / when / then form.
+  - The input rules and messages sit in one shared section that S-5 and S-12
+    both point to.
+
+  Tests. 17 test titles in four test files now cite S-12 or S-13 instead of S-5
+  or S-6. No test code changed; I checked that only title lines differ.
+
+  verification.md (docs/verification.md)
+  - S-12 and S-13 rows: S-12 AC-1, AC-2, AC-3, AC-6 and AC-7, and S-13 AC-1,
+    AC-5 and AC-8, are tested.
+  - Known limits: the admin criteria that run on the same components as the
+    learner form but have no admin-specific test.
+  - Your keyboard check is recorded in detail as a pass for S-6 AC-2. For S-13
+    AC-2 I recorded only what you described: switching to the admin form with
+    the arrow keys. You didn't say whether you tabbed through the admin form
+    itself. If you did and it was fine, tell me and I'll mark S-13 AC-2 as a
+    full pass.
+
+  Should I push it?
