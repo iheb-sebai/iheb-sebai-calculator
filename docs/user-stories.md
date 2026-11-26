@@ -1,5 +1,8 @@
 # User stories and acceptance criteria
 
+Each story follows the brief's format: who wants what and why, the one job it serves
+([jobs-to-be-done.md](jobs-to-be-done.md)), its status, and acceptance criteria written as Given / when / then.
+
 Each criterion has an ID (`S-3 AC-2`). Most test names cite the criterion they check, or the story or decision
 (`D-1`) when no single criterion fits, so a failing test points to the rule it breaks. The word-for-word checks of
 the screen text are named after the text they check. [verification.md](verification.md) maps every criterion to
@@ -11,117 +14,160 @@ Friday and Saturday are the weekend.
 **"Today"** is the device's local date at the time of the calculation. The calculation engine never reads the
 clock: today is passed in as a parameter.
 
+| Story | Job | Status |
+|---|---|---|
+| S-1 Minutes needed per working day | J-1 | Implemented |
+| S-2 Working days | J-1 | Implemented |
+| S-3 Pace status | J-2 | Implemented |
+| S-4 Earliest and recommended due date | J-3 | Implemented |
+| S-5 Clear errors, no crash, and recovery | J-1 | Implemented |
+| S-6 Accessibility | J-1 | Implemented |
+| S-7 English / Arabic | J-1 | Not implemented |
+| S-8 Several courses | J-1 | Not implemented |
+| S-9 Public holidays per country | J-3 | Not implemented |
+| S-10 Calendar export | J-1 | Not implemented |
+| S-11 Timeline | J-2 | Not implemented |
+
 ---
 
-## S-1 (J-1): Minutes needed per working day
+## Implemented
 
-As a learner, I enter my total course time and the time I've already done, and I see how many minutes I need on
-each working day left.
+### S-1: Minutes needed per working day
 
-- **AC-1** Remaining time = total time − time done.
-- **AC-2** Minutes per working day = remaining minutes ÷ working days left, **rounded up** to a whole minute.
-  Example: 100 min over 3 working days gives **34** (33.3 rounded up), never 33.
-- **AC-3** A division that comes out even is not rounded further. Example: 90 min over 3 days gives **30**.
-- **AC-4** If the minutes needed are more than 480 (8 h), the number is still shown, with the note "That's more
-  than a full working day." It is a real answer, not an error.
-- **AC-5** Times of 60 minutes or more are also shown in hours and minutes. Example: "85 min (1 h 25 min)".
-- **AC-6** Realistic example: total 7 h 40 min (460 min), 1 h 10 min done (70 min), today Thu 2026-11-26, due
-  Thu 2026-12-31, Mon–Fri.
-  - Remaining time: 390 min.
-  - Working days left: **26** (2 + 5 + 5 + 5 + 5 + 4). Fri 2026-12-25 counts as a working day because v1 has no
-    public holidays (D-10).
-  - Result: **15 min a day over 26 working days (Mon–Fri)**.
-- **AC-7** Under the plan, the page shows the time left and the public holidays note, for example "390 min (6 h 30
-  min) left. Public holidays are not counted: remove them from your plan yourself." (see [Screen text](#screen-text)).
+**Job:** J-1 · **Status:** Implemented
 
-## S-2 (J-1): Working days
+As a learner, I want to see how many minutes I need on each working day left, so that I can finish my training
+by the due date without a last-minute rush.
 
-As a learner, I choose which days I work, and I see how many working days I have left.
+- **AC-1** Given a total course time and the time already done, when the result is shown, then the remaining time
+  is the total minus the time done.
+- **AC-2** Given 100 minutes remaining and 3 working days left, when the result is shown, then I need **34** min a
+  day (33.3 rounded up), never 33.
+- **AC-3** Given 90 minutes remaining and 3 working days left, when the result is shown, then I need exactly **30**
+  min a day: a division that comes out even is not rounded further.
+- **AC-4** Given the minutes needed per day are more than 480 (8 h), when the result is shown, then the number is
+  still shown, with the note "That's more than a full working day." It is a real answer, not an error.
+- **AC-5** Given a time of 60 minutes or more, when it is shown, then it also appears in hours and minutes, for
+  example "85 min (1 h 25 min)".
+- **AC-6** Given a total of 7 h 40 min (460 min), 1 h 10 min done (70 min), today Thu 2026-11-26, a due date of
+  Thu 2026-12-31 and Mon–Fri, when the result is shown, then:
+  - the remaining time is 390 min;
+  - there are **26** working days left (2 + 5 + 5 + 5 + 5 + 4). Fri 2026-12-25 counts as a working day because v1
+    has no public holidays (D-10);
+  - the result reads **15 min a day over 26 working days (Mon–Fri)**.
+- **AC-7** Given a plan is shown, when I read below it, then I see the time left and the public holidays note, for
+  example "390 min (6 h 30 min) left. Public holidays are not counted: remove them from your plan yourself." (see
+  [Screen text](#screen-text)).
 
-- **AC-1** Two preset buttons: **Mon–Fri** (the default) and **Sun–Thu**. There is also one toggle for each of the
-  7 days, Mon to Sun: a checkbox styled as a button (S-6 AC-5).
-- **AC-2** Pressing a preset sets the days. The preset buttons always match the days: the matching preset shows as
-  pressed, and if no preset matches, **Custom** is shown.
-- **AC-3** Working days left = every checked weekday from today to the due date. Both ends are included.
-- **AC-4** Today counts only if it is a checked weekday.
+### S-2: Working days
+
+**Job:** J-1 · **Status:** Implemented
+
+As a learner, I want to choose which days I work, so that my daily amount is spread only over the days I can
+actually learn at work.
+
+- **AC-1** Given the working-days control, when I look at it, then there are two preset buttons, **Mon–Fri** (the
+  default) and **Sun–Thu**, and one toggle for each of the 7 days, Mon to Sun: a checkbox styled as a button (S-6
+  AC-5).
+- **AC-2** Given any choice of days, when I press a preset, then the days are set to it; and whenever the days
+  match a preset, that preset shows as pressed, otherwise **Custom** is shown.
+- **AC-3** Given today and a due date, when the working days left are counted, then every checked weekday from today
+  to the due date counts, both ends included.
+- **AC-4** Given today is not a checked weekday, when the working days left are counted, then today does not count.
   - Today Thu 2026-11-26, Mon–Fri, due Thu 2026-11-26: **1** working day left.
   - Today Sat 2026-11-28, Mon–Fri, due Fri 2026-12-04: **5** (Saturday does not count).
   - Today Thu 2026-11-26, Sun–Thu, due Sun 2026-11-29: **2** (Thursday and Sunday).
-- **AC-5** A due date that falls on a non-working day is allowed. Only the working days before it count.
-- **AC-6** Every result sentence repeats the working days it used, so a wrong default is easy to spot. Example:
-  "15 min a day over 26 working days (Mon–Fri)". Presets show as "Mon–Fri" and "Sun–Thu". A custom choice lists
-  the days in week order starting from Monday ("Mon, Wed, Fri", "Sat, Sun"), and all seven days show as "every
-  day". Admin results do the same.
+- **AC-5** Given a due date that falls on a non-working day, when I enter it, then it is allowed, and only the working
+  days before it count.
+- **AC-6** Given any result, when it is shown, then its sentence repeats the working days it used, so a wrong default
+  is easy to spot. Example: "15 min a day over 26 working days (Mon–Fri)". Presets show as "Mon–Fri" and
+  "Sun–Thu". A custom choice lists the days in week order starting from Monday ("Mon, Wed, Fri", "Sat, Sun"), and
+  all seven days show as "every day". Admin results do the same.
 
-## S-3 (J-2): Pace status
+### S-3: Pace status
 
-As a learner, I enter the minutes I can spare per working day, and I see whether I'll finish on time.
+**Job:** J-2 · **Status:** Implemented
 
-- **AC-1** **On track** when minutes needed ≤ 80% of spare minutes. Example, spare 100: needed 80 is On track.
-- **AC-2** **Tight** when minutes needed > 80% and ≤ 100% of spare minutes. Example, spare 100: needed 81 and
-  needed 100 are both Tight.
-- **AC-3** **Late** when minutes needed > spare minutes. Example, spare 100: needed 101 is Late.
-- **AC-4** The comparison uses whole numbers (needed × 100 ≤ spare × 80), so no rounding error can move a
-  borderline case into the wrong status.
-- **AC-5** When the status is Late, the learner also sees:
-  - the **projected finish date**. If n = remaining ÷ spare (rounded up), the finish date is the nth working day
+As a learner, I want to enter the minutes I can spare each working day, so that I know early whether I will be
+late, and by how much, while there is still time to ask for more time or time off work to learn.
+
+- **AC-1** Given 100 spare minutes, when I need 80 (80% or less of my spare time), then the status is **On track**.
+- **AC-2** Given 100 spare minutes, when I need 81 or 100 (more than 80% and at most 100%), then the status is
+  **Tight**.
+- **AC-3** Given 100 spare minutes, when I need 101 (more than my spare time), then the status is **Late**.
+- **AC-4** Given a borderline case, when the status is decided, then it is compared in whole numbers (needed × 100 ≤
+  spare × 80), so no rounding error can move it into the wrong status.
+- **AC-5** Given the status is Late, when the result is shown, then I also see:
+  - the **projected finish date**: if n = remaining ÷ spare (rounded up), the finish date is the nth working day
     counting from today, with today included if it is a working day;
   - **working days late** = n − working days left.
   - Example: today Thu 2026-11-26, Mon–Fri, due Mon 2026-11-30 (3 working days), 300 min remaining, 50 min spare.
     Needed is 100, so Late. n = 6, finish **Thu 2026-12-03**, **3 working days late**.
   - On screen this is three lines, with the date large: "At 50 min a day you'll finish on" / "Thu 3 Dec 2026" /
     "3 working days late".
-- **AC-6** **Spare = 0 is Late, not an error.** The message reads: "At 0 minutes a day you won't finish. Ask for
-  learning time or a new due date." No finish date and no days-late number are shown. Nothing shows "Infinity".
-- **AC-7** If spare is left blank, no status is shown and the minutes per working day are still shown, with the hint
-  "Add the minutes you can spare to see if you're on track." A blank spare field is not an error.
-- **AC-8** The status is written as a word ("On track", "Tight", "Late"), never shown by colour alone.
-- **AC-9** On track and Tight each come with one line of explanation:
+- **AC-6** Given 0 spare minutes, when the result is shown, then the status is **Late**, not an error, with the
+  message "At 0 minutes a day you won't finish. Ask for learning time or a new due date." No finish date and no
+  days-late number are shown, and nothing shows "Infinity".
+- **AC-7** Given the spare time is left blank, when the result is shown, then no status is shown, the minutes per
+  working day are still shown with the hint "Add the minutes you can spare to see if you're on track.", and the
+  blank field is not an error.
+- **AC-8** Given any status, when it is shown, then it is written as a word ("On track", "Tight", "Late"), never
+  shown by colour alone.
+- **AC-9** Given the status is On track or Tight, when it is shown, then one line explains it:
   - On track, with the person's own share from the pace meter: "Comfortable: you're using 50% of your spare
     time."
   - Tight: "You need more than 80% of your spare time, so one bad day could make you late."
-- **AC-10** When spare time is more than 0, a pace meter shows the minutes needed as a share of the spare time:
-  "Your pace" and "15 min of your 18 min spare · 83%". From 60 minutes up the times also show hours (S-1 AC-5):
-  "400 min (6 h 40 min) of your 480 min (8 h) spare · 83%". The percentage is rounded to the nearest whole percent
-  (D-16): 15 of 18 is 83.3%, shown as 83%. The bar has three zones marked 0%, 80%, 100% and "over": On track, Tight and
-  Late. A marker shows the exact share, so it always sits in its status's zone, and it stops at the end of the bar
-  past 125%. The bar repeats the status in the panel and the chip, so it is hidden from screen readers; the text
-  line is read.
-- **AC-11** When the minutes needed per day are more than a full working day (480, D-8), for example 999 hours due
-  tomorrow, the pace line reads "way over" instead of a huge percentage, and the bar is hidden.
+- **AC-10** Given the spare time is more than 0, when the result is shown, then a pace meter shows the minutes
+  needed as a share of the spare time: "Your pace" and "15 min of your 18 min spare · 83%". From 60 minutes up the
+  times also show hours (S-1 AC-5): "400 min (6 h 40 min) of your 480 min (8 h) spare · 83%". The percentage is
+  rounded to the nearest whole percent (D-16): 15 of 18 is 83.3%, shown as 83%. The bar has three zones marked
+  0%, 80%, 100% and "over": On track, Tight and Late. A marker shows the exact share, so it always sits in its
+  status's zone, and it stops at the end of the bar past 125%. The bar repeats the status in the panel and the
+  chip, so it is hidden from screen readers; the text line is read.
+- **AC-11** Given the minutes needed per day are more than a full working day (480, D-8), for example 999 hours due
+  tomorrow, when the pace meter is shown, then it reads "way over" instead of a huge percentage, and the bar is
+  hidden.
 
-## S-4 (J-3): Admin: earliest and recommended due date
+### S-4: Earliest and recommended due date
 
-As an L&D admin, I enter the course time, the daily learning time employees are given, a start date and the
-working days. I see the earliest due date they can meet, and a recommended due date that leaves a margin.
+**Job:** J-3 · **Status:** Implemented
 
-- **AC-1** The start date is today by default.
-- **AC-2** Working days needed = course minutes ÷ daily minutes, rounded up. The **earliest due date** is the
-  working day with that number, counting from the start date (the start date counts if it is a working day). If
-  the start date is not a working day, counting begins at the next working day.
-  - Example: 300 min, 60 min a day, start Thu 2026-11-26, Mon–Fri. That is 5 working days, so the earliest date
-    is **Wed 2026-12-02**.
-- **AC-3** **Recommended due date**: the earliest date where the daily pace stays at or under 80% of the daily
-  time (the learner's On track rule). It is labelled "Recommended due date", with the line "Keeps the daily pace to
-  80% or less of the time you give." Pace = daily × 80 ÷ 100, rounded down. Working days = course ÷ pace, rounded
-  up.
+As an L&D admin, I want to enter the course time, the daily learning time employees are given, a start date and
+the working days, so that I can set a due date employees can realistically meet, and one with a margin.
+
+- **AC-1** Given the admin form opens, when I look at the start date, then it is today.
+- **AC-2** Given a course time and a daily time, when the result is shown, then the working days needed are course
+  minutes ÷ daily minutes, rounded up, and the **earliest due date** is the working day with that number, counting
+  from the start date (the start date counts if it is a working day; if not, counting begins at the next working
+  day).
+  - Example: 300 min, 60 min a day, start Thu 2026-11-26, Mon–Fri. That is 5 working days, so the earliest date is
+    **Wed 2026-12-02**.
+- **AC-3** Given a course time and a daily time, when the result is shown, then I also see the **recommended due
+  date**: the earliest date where the daily pace stays at or under 80% of the daily time (the learner's On track
+  rule). It is labelled "Recommended due date", with the line "Keeps the daily pace to 80% or less of the time you
+  give." Pace = daily × 80 ÷ 100, rounded down. Working days = course ÷ pace, rounded up.
   - Example: 300 min, 60 min a day gives a pace of 48 and 7 working days, so the recommended date is
     **Fri 2026-12-04**.
-- **AC-4** With a daily time of 1 minute, the pace rounds down to 0. In that case the recommended date reads
-  "Not available at 1 minute a day. Raise the daily time to get a date with a margin." The earliest date is still
-  shown.
-- **AC-5** A **daily time of 0 is a result, not an error**: "At 0 minutes a day employees can't finish. Give them
-  learning time to get a due date." No date is shown.
-- **AC-6** Rules that hold across both roles. Take a learner with the same course, 0 done, today = start date and
-  spare = daily time.
-  - With the earliest due date, that learner is **not Late**.
-  - With the working day before the earliest due date, that learner **is Late** (whenever that day is not before
-    the start date).
-  - With the recommended due date, that learner is **On track**.
+- **AC-4** Given a daily time of 1 minute, when the result is shown, then the pace rounds down to 0, so the
+  recommended date reads "Not available at 1 minute a day. Raise the daily time to get a date with a margin." The
+  earliest date is still shown.
+- **AC-5** Given a daily time of 0, when the result is shown, then no date is shown and the result reads "At 0
+  minutes a day employees can't finish. Give them learning time to get a due date." It is a result, not an error.
+- **AC-6** Given a learner with the same course, 0 done, today = the start date and spare time = the daily time,
+  when that learner uses the admin's dates, then:
+  - with the earliest due date, that learner is **not Late**;
+  - with the working day before the earliest due date, that learner **is Late** (whenever that day is not before
+    the start date);
+  - with the recommended due date, that learner is **On track**.
 
-## S-5 (J-1..J-3): Clear errors, no crash, and recovery
+### S-5: Clear errors, no crash, and recovery
 
-### Input rules
+**Job:** J-1 · **Status:** Implemented
+
+As a learner or an L&D admin, I want a clear message when something I enter can't be used, so that I can fix it
+and still get a correct answer, never a crash or a wrong number.
+
+#### Input rules
 
 | Field | Allowed |
 |---|---|
@@ -134,7 +180,7 @@ working days. I see the earliest due date they can meet, and a recommended due d
 
 Spaces around a number are ignored. Time fields start at "0" rather than blank.
 
-### Messages
+#### Messages
 
 | Condition | Shown at | Message |
 |---|---|---|
@@ -155,74 +201,133 @@ Spaces around a number are ignored. Time fields start at "0" rather than blank.
 | Admin start date before today | start date | The start date can't be before today. |
 | The engine gets an impossible number (a parser bug; should never be seen) | result | Something in the form isn't valid. Check the fields above. |
 
-### Acceptance criteria
+#### Acceptance criteria
 
-- **AC-1** Every condition in the table shows its message. None of them causes a crash, a blank page, an uncaught
-  exception, or the text "NaN", "Infinity" or "undefined" anywhere on the page.
-- **AC-2** All field errors are shown at the same time, each next to its own field.
-- **AC-3** Once the fields are valid, only the first matching check below is shown:
+- **AC-1** Given any condition in the messages table, when it happens, then its message is shown, and none of them
+  causes a crash, a blank page, an uncaught exception, or the text "NaN", "Infinity" or "undefined" anywhere on the
+  page.
+- **AC-2** Given several fields are wrong, when the form is shown, then all field errors appear at the same time,
+  each next to its own field.
+- **AC-3** Given the fields are valid but more than one check below fails, when the result is shown, then only the
+  first matching check is shown:
   - **Learner:** time done > total → already complete → no working day checked → due date in the past → no
     working days left → result.
   - **Admin:** no working day checked → start date before today → result.
-- **AC-4** **Recovery:** after any error, fixing the input removes the message and shows the correct result. No
+- **AC-4** Given an error is shown, when I fix the input, then the message goes and the correct result appears. No
   reload is needed, and no earlier result is left on screen.
-- **AC-5** No working days left is a different case from no working day checked, and it has its own message.
-  Example: today Fri 2026-11-27, Sun–Thu, due Sat 2026-11-28.
-- **AC-6** A field shows its error only after the user has changed it or moved focus out of it.
-- **AC-7** The result area is never blank. Until every field is valid, it shows a friendly empty state:
+- **AC-5** Given today Fri 2026-11-27, Sun–Thu and a due date of Sat 2026-11-28, when the result is shown, then it
+  says there are no working days left: a different case, with its own message, from no working day checked.
+- **AC-6** Given a field I have not changed or left yet, when I edit another field, then that field shows no error.
+- **AC-7** Given not every field is valid, when I look at the result area, then it is never blank; it shows a
+  friendly empty state:
   - Learner: "Enter your training to see your daily pace."
   - Admin: "Enter your course to see the earliest due date."
 
-## S-6 (J-1..J-3): Accessibility
+### S-6: Accessibility
 
-- **AC-1** Every input has a visible label tied to it, so a screen reader reads the label and tests can find the
-  input by its label.
-- **AC-2** The whole app works with the keyboard alone, and keyboard focus is always visible.
-- **AC-3** The result area is a live region (`role="status"`, polite), so screen readers announce changes to it.
-- **AC-4** A field with an error has `aria-invalid="true"`, and its message is linked with `aria-describedby`. For
-  the working days, each day toggle is marked and linked; for hours and minutes, both inputs of the group are.
-- **AC-5** The Learner/Admin switch is a two-option segmented control built on radio buttons, so it works with the
-  arrow keys and shows which role is selected. The day toggles are checkboxes and the presets are buttons, so Tab,
-  Space and Enter work on them.
-- **AC-6** An error from the checks in S-5 AC-3 is shown next to its field and repeated in the result area, so
-  screen readers announce it.
-- **AC-7** On small screens, a short summary of the result (minutes a day and status, or the earliest date) stays at
-  the top while the person scrolls the form. It only repeats the result visually (`aria-hidden`), so screen readers
-  announce the result once, from the live region.
-- **AC-8** Dates are picked from a calendar, not the browser's date field (D-15). The field shows the date
-  ("Thu 31 Dec 2026"), or "Pick a date" when empty, and opens a month calendar, Monday first, with "Previous
-  month" and "Next month" buttons. Today and the picked day are marked; non-working days are lighter but can
-  still be picked (S-2 AC-5). Days before today are greyed out and can't be picked; the arrow keys still pass
-  over them. The "in the past" errors (S-5) stay: a page left open past midnight can still hold yesterday's date.
-  It works with the keyboard alone: Enter or Down opens it on the picked day (else today), arrows move by day and
-  week, Home/End go to the start or end of the week, Page Up/Down change month (with Shift, year), Enter picks.
-  Escape closes it and returns focus to the field; the field has not been left, so an empty date shows no error
-  yet (S-5 AC-6). A click outside or Tab out also closes it. The field is a combobox labelled with the field's
-  name; the calendar is a dialog with a grid.
+**Job:** J-1 · **Status:** Implemented
 
-## S-7 (STRETCH): English / Arabic
+As a learner or an L&D admin who uses a keyboard or a screen reader, I want every part of the calculator to work
+without a mouse and to be read out, so that I can plan my training (or a rollout) like anyone else.
 
-English and Arabic, with a right-to-left layout. **Status: partly done.**
+- **AC-1** Given any input, when it is shown, then it has a visible label tied to it, so a screen reader reads the
+  label and tests can find the input by its label.
+- **AC-2** Given only a keyboard, when I use the whole app, then everything works and keyboard focus is always
+  visible.
+- **AC-3** Given a screen reader, when the result changes, then it is announced: the result area is a live region
+  (`role="status"`, polite).
+- **AC-4** Given a field with an error, when a screen reader reaches it, then it has `aria-invalid="true"` and its
+  message is linked with `aria-describedby`. For the working days, each day toggle is marked and linked; for hours
+  and minutes, both inputs of the group are.
+- **AC-5** Given the Learner/Admin switch, the day toggles and the presets, when I use them with the keyboard, then
+  they behave as what they are: the switch is a two-option segmented control built on radio buttons, so it works
+  with the arrow keys and shows which role is selected; the day toggles are checkboxes and the presets are
+  buttons, so Tab, Space and Enter work on them.
+- **AC-6** Given an error from the checks in S-5 AC-3, when it is shown, then it appears next to its field and is
+  repeated in the result area, so screen readers announce it.
+- **AC-7** Given a small screen, when I scroll the form, then a short summary of the result (minutes a day and
+  status, or the earliest date) stays at the top. It only repeats the result visually (`aria-hidden`), so screen
+  readers announce the result once, from the live region.
+- **AC-8** Given a date field, when I pick a date, then I use a calendar, not the browser's date field (D-15):
+  - the field shows the date ("Thu 31 Dec 2026"), or "Pick a date" when empty, and opens a month calendar, Monday
+    first, with "Previous month" and "Next month" buttons;
+  - today and the picked day are marked; non-working days are lighter but can still be picked (S-2 AC-5); days
+    before today are greyed out and can't be picked, though the arrow keys still pass over them. The "in the past"
+    errors (S-5) stay: a page left open past midnight can still hold yesterday's date;
+  - it works with the keyboard alone: Enter or Down opens it on the picked day (else today), arrows move by day and
+    week, Home/End go to the start or end of the week, Page Up/Down change month (with Shift, year), Enter picks.
+    Escape closes it and returns focus to the field; the field has not been left, so an empty date shows no error
+    yet (S-5 AC-6). A click outside or Tab out also closes it;
+  - the field is a combobox labelled with the field's name; the calendar is a dialog with a grid.
 
-- Done: Arabic-Indic digits (١٥, ۱۵) are accepted in every number field (D-13), and the header shows the name in
-  Arabic (خطوة).
-- Not done: Arabic text and the right-to-left layout.
-- Where the visible text lives today, for whoever builds it:
-  - `src/lib/messages.ts`: labels, headings, messages, statuses and empty states;
-  - `src/lib/format.ts`: the result sentences built from the numbers;
-  - `src/components/LearnerForm.tsx`: the words "a day" and "over" around the big number and in the phone summary;
-  - `src/lib/dates.ts`: weekday short names and the date format ("Thu 3 Dec 2026");
-  - `src/lib/calendar.ts`: month names and full weekday names in the date picker;
-  - `src/lib/workingDays.ts`: the working-day labels in result sentences ("Mon–Fri", "Sun–Thu", "every day").
-- `src/lib/messages.test.ts` checks only the text in `messages.ts` against this file.
+---
 
 ## Not implemented (next)
 
-- **S-8** A list of several courses with a combined pace.
-- **S-9** Public holidays per country.
-- **S-10** Export the study plan to a calendar file (.ics).
-- **S-11** Timeline from today to the finish date and the due date (from the design preview). Not implemented: it
-  needs a finish date for On track and Tight, and the engine only calculates one for Late.
+### S-7: English / Arabic (stretch)
+
+**Job:** J-1 · **Status:** Not implemented
+
+As a learner who reads Arabic, I want the calculator in Arabic with a right-to-left layout, so that I can
+understand my daily amount in my own language.
+
+- **AC-1** Given Arabic is chosen, when any page is shown, then all its text is in Arabic and the layout runs right
+  to left.
+
+Already in place: Arabic-Indic digits (١٥, ۱۵) are accepted in every number field (D-13), and the header shows the
+name in Arabic (خطوة). Where the visible text lives today, for whoever builds it:
+
+- `src/lib/messages.ts`: labels, headings, messages, statuses and empty states;
+- `src/lib/format.ts`: the result sentences built from the numbers;
+- `src/components/LearnerForm.tsx`: the words "a day" and "over" around the big number and in the phone summary;
+- `src/lib/dates.ts`: weekday short names and the date format ("Thu 3 Dec 2026");
+- `src/lib/calendar.ts`: month names and full weekday names in the date picker;
+- `src/lib/workingDays.ts`: the working-day labels in result sentences ("Mon–Fri", "Sun–Thu", "every day").
+
+`src/lib/messages.test.ts` checks only the text in `messages.ts` against this file.
+
+### S-8: Several courses
+
+**Job:** J-1 · **Status:** Not implemented
+
+As a learner with several assigned courses, I want one combined daily pace, so that I know how much to do each
+working day across all of them.
+
+- **AC-1** Given two or more courses, each with its own due date, when the result is shown, then I see one number
+  of minutes per working day that finishes every course by its own due date.
+
+### S-9: Public holidays per country
+
+**Job:** J-3 · **Status:** Not implemented
+
+As an L&D admin, I want my country's public holidays left out of the working days, so that the due date I set can
+really be met.
+
+- **AC-1** Given a country is chosen, when working days are counted, then that country's public holidays are not
+  counted (for the learner as well as the admin).
+
+### S-10: Calendar export
+
+**Job:** J-1 · **Status:** Not implemented
+
+As a learner, I want to export my study plan to my calendar, so that the daily amount is blocked out on each
+working day.
+
+- **AC-1** Given a plan, when I export it, then I get a calendar file (.ics) with one event on each working day up
+  to the due date, each as long as the daily amount.
+
+### S-11: Timeline
+
+**Job:** J-2 · **Status:** Not implemented
+
+As a learner, I want a timeline from today to my finish date and the due date (from the design preview), so that I
+can see at a glance how far apart they are.
+
+- **AC-1** Given a plan with spare time entered, when the result is shown, then a timeline marks today, the
+  projected finish date and the due date.
+
+Not implemented because it needs a finish date for On track and Tight, and the engine only calculates one for
+Late.
 
 ---
 

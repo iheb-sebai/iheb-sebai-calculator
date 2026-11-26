@@ -1,7 +1,13 @@
 # Jobs to be done
 
 The jobs describe the situation and the outcome people want. They name no app features. Each story in
-[user-stories.md](user-stories.md) points back to a job.
+[user-stories.md](user-stories.md) traces to exactly one job:
+
+| Job | Stories |
+|---|---|
+| J-1 (Learner): know the daily amount | S-1, S-2, S-5, S-6, S-7, S-8, S-10 |
+| J-2 (Learner): know early that I'm behind | S-3, S-11 |
+| J-3 (L&D Admin): set a due date people can meet | S-4, S-9 |
 
 ## The problem
 

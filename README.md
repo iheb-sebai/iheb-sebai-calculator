@@ -89,9 +89,9 @@ in [docs/verification.md](docs/verification.md).
 
 ## Not implemented
 
-- **S-7 English/Arabic:** partly done. Arabic-Indic digits are accepted and the header shows خطوة; Arabic text
-  and a right-to-left layout are not built. [S-7](docs/user-stories.md#s-7-stretch-english--arabic) lists where
-  the text lives today.
+- **S-7 English/Arabic:** not implemented. Arabic-Indic digits are already accepted and the header shows خطوة,
+  but Arabic text and a right-to-left layout are not built.
+  [S-7](docs/user-stories.md#s-7-english--arabic-stretch) lists where the text lives today.
 - **S-8** several courses with a combined pace, **S-9** public holidays per country, **S-10** calendar (.ics)
   export, **S-11** the timeline from the design preview (it needs a finish date for On track and Tight, which the
   engine only calculates for Late).

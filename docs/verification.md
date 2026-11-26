@@ -56,6 +56,7 @@ npm run dev         # manual checks in the browser
 | D-13: Arabic-Indic digits | `src/lib/parse.test.ts` | pass |
 | Same results in every time zone | `npm run test:tz` | pass (all 406 tests, twice) |
 | Fast working-day count matches a day-by-day count (all 127 weekday sets) | `src/lib/workingDays.test.ts` | pass |
+| S-7 to S-11: each has one planned criterion (Status: Not implemented) | none | not implemented, so not tested |
 | Production build | `npm run build` | pass |
 
 ## Planted-bug checks
