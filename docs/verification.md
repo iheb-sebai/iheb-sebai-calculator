@@ -3,8 +3,8 @@
 How each acceptance criterion in [user-stories.md](user-stories.md) is checked, and the result.
 
 > **Status: the engine and the UI are built, and every automated check passes. The UI was also driven by script in
-> headless Chromium (desktop, phone, device set to dark mode). The keyboard check and the checks by hand, including
-> VoiceOver, are not done yet.** A row says "pass" only after the test or check has actually been run.
+> headless Chromium (desktop, phone, device set to dark mode). The keyboard check was done by hand and passed;
+> VoiceOver is not checked yet.** A row says "pass" only after the test or check has actually been run.
 
 ## How to run
 
@@ -92,7 +92,7 @@ mistake there fails a test instead of freezing the page.
 |---|---|
 | Every story in a real browser, driven by script (headless Chromium: 1360 px desktop, 390 px phone, device set to dark mode), screenshots checked, fonts load locally, no horizontal scroll at 360 px, no console errors | pass |
 | Every story by hand in the browser (`npm run dev`) | not run |
-| S-6 AC-2: whole app with the keyboard only, focus always visible | not checked: an earlier scripted run passed, but the layout and the date picker changed after it. To be checked by hand. |
+| S-6 AC-2: whole app with the keyboard only, focus always visible | pass: checked by hand by the author on 26 Nov 2026, on the current UI (with the date picker) |
 | S-6 AC-3: VoiceOver announces the result after an edit | not run |
 | S-5 attack pass: paste, very long input, typing quickly while errors show, switching role mid-error | not run (role switch is covered by `src/App.test.tsx`) |
 | S-3 AC-8: statuses readable without colour (greyscale) | not run |

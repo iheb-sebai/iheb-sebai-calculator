@@ -84,8 +84,8 @@ result area is a polite live region, so changes are announced. Status is a word 
 The role switch, day toggles and presets are real radio buttons, checkboxes and buttons. The date picker follows
 the WAI-ARIA date picker pattern and works with the keyboard alone. Text and controls pass WCAG AA contrast.
 
-**Not yet checked by hand:** the whole app with the keyboard only, and VoiceOver. See the manual checks in
-[docs/verification.md](docs/verification.md).
+**Checked by hand:** the whole app with the keyboard only. **Not checked yet:** VoiceOver. See the manual checks
+in [docs/verification.md](docs/verification.md).
 
 ## Not implemented
 
