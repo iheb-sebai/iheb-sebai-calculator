@@ -42,11 +42,15 @@ npm run dev         # manual checks in the browser
 | S-4 AC-1 (start date is today by default) | `src/App.test.tsx` | pass |
 | S-4 AC-2 to AC-5 | `src/lib/admin.test.ts`, `src/App.test.tsx` | pass |
 | S-4 AC-6 (rules across both roles, all 127 working-day choices) | `src/lib/admin.test.ts` | pass |
-| S-5 input rules | `src/lib/parse.test.ts`, `src/lib/dates.test.ts` | pass |
-| S-5 messages are the docs' wording, word for word | `src/lib/messages.test.ts` | pass |
-| S-5 AC-1, AC-3, AC-5 (engine) | `src/lib/learner.test.ts`, `src/lib/admin.test.ts` | pass |
+| S-5 and S-12 input rules (shared) | `src/lib/parse.test.ts`, `src/lib/dates.test.ts` | pass |
+| S-5 and S-12 messages are the docs' wording, word for word | `src/lib/messages.test.ts` | pass |
+| S-5 AC-1, AC-3, AC-5 (engine) | `src/lib/learner.test.ts` | pass |
+| S-12 AC-1, AC-3 (engine) | `src/lib/admin.test.ts` | pass |
+| S-12 AC-2 (every admin field error at once) | `src/lib/parse.test.ts` | pass |
+| S-12 AC-6, AC-7 (admin empty state; start date in the past after midnight) | `src/App.test.tsx` | pass |
 | S-5 AC-1, AC-2, AC-4 to AC-7 (on screen) | `src/App.test.tsx` | pass |
 | S-6 AC-1, AC-3 to AC-7 | `src/App.test.tsx` | pass |
+| S-13 AC-1, AC-5, AC-8 (admin labels, role switch, start date calendar) | `src/App.test.tsx` | pass |
 | S-6 AC-8 (date picker: keyboard path, Escape, click outside, focus return, today, picked and non-working days, past days greyed out and not pickable, "in the past" errors after midnight) | `src/App.test.tsx`, `src/lib/calendar.test.ts` | pass |
 | Screen text: every label and message on the page is in the docs, word for word | `src/lib/messages.test.ts` | pass |
 | Colour contrast: 40 text, border, icon, meter and focus pairs (text 4.5:1, the rest 3:1). The app is light mode only, also when the device is set to dark | script over `src/styles.css` | pass |
@@ -93,8 +97,9 @@ mistake there fails a test instead of freezing the page.
 |---|---|
 | Every story in a real browser, driven by script (headless Chromium: 1360 px desktop, 390 px phone, device set to dark mode), screenshots checked, fonts load locally, no horizontal scroll at 360 px, no console errors | pass |
 | Every story by hand in the browser (`npm run dev`) | not run |
-| S-6 AC-2: whole app with the keyboard only, focus always visible | pass: checked by hand by the author on 26 Nov 2026, on the current UI (with the date picker) |
-| S-6 AC-3: VoiceOver announces the result after an edit | not run |
+| S-6 AC-2: whole app with the keyboard only, focus always visible | pass: checked by hand by the author on 26 Nov 2026, on the current UI. Tab goes through every control top to bottom and focus is always visible; the arrow keys switch between learner and admin; the calendar opens with Enter, the arrow keys move the day, Enter picks a date, and Escape closes it with focus back on the date field; Space toggles the days and Enter works on the presets. No problems found. |
+| S-13 AC-2: the admin calculator with the keyboard only | pass for switching to the admin form with the arrow keys (same hand check). Tab order and focus on the admin form itself were not reported separately. |
+| S-6 AC-3 and S-13 AC-3: VoiceOver announces the result after an edit | not run |
 | S-5 attack pass: paste, very long input, typing quickly while errors show, switching role mid-error | not run (role switch is covered by `src/App.test.tsx`) |
 | S-3 AC-8: statuses readable without colour (greyscale) | not run |
 
@@ -111,7 +116,10 @@ mistake there fails a test instead of freezing the page.
   takes Shift + Page Down.
 
 - Parts of criteria with no automated test (from the final audit):
-  - S-6 AC-7: the phone summary is tested for a learner plan only, not for the admin date or "Already complete".
+  - S-6 AC-7: the phone summary is tested for a learner plan, not for "Already complete". S-13 AC-7 (the admin
+    summary) is not tested.
+  - S-12 AC-4, AC-5 and S-13 AC-3, AC-4, AC-6: no admin-specific automated test. They use the same components
+    as the learner form, where S-5 AC-4, AC-6 and S-6 AC-3, AC-4, AC-6 are tested.
   - S-6 AC-8: opening the calendar with Down, Home and closing it with Tab are not tested in the UI (Home's date
     maths is tested in `calendar.test.ts`; Shift+Page Down is tested).
   - S-6 AC-4: `aria-invalid` on the date picker field is not tested.

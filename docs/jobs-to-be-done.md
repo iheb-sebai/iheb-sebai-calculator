@@ -7,7 +7,7 @@ The jobs describe the situation and the outcome people want. They name no app fe
 |---|---|
 | J-1 (Learner): know the daily amount | S-1, S-2, S-5, S-6, S-7, S-8, S-10 |
 | J-2 (Learner): know early that I'm behind | S-3, S-11 |
-| J-3 (L&D Admin): set a due date people can meet | S-4, S-9 |
+| J-3 (L&D Admin): set a due date people can meet | S-4, S-9, S-12, S-13 |
 
 ## The problem
 

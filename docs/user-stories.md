@@ -20,8 +20,10 @@ clock: today is passed in as a parameter.
 | S-2 Working days | J-1 | Implemented |
 | S-3 Pace status | J-2 | Implemented |
 | S-4 Earliest and recommended due date | J-3 | Implemented |
-| S-5 Clear errors, no crash, and recovery | J-1 | Implemented |
-| S-6 Accessibility | J-1 | Implemented |
+| S-5 Clear errors, no crash, and recovery (learner) | J-1 | Implemented |
+| S-6 Accessibility (learner) | J-1 | Implemented |
+| S-12 Clear errors, no crash, and recovery (L&D admin) | J-3 | Implemented |
+| S-13 Accessibility (L&D admin) | J-3 | Implemented |
 | S-7 English / Arabic | J-1 | Not implemented |
 | S-8 Several courses | J-1 | Not implemented |
 | S-9 Public holidays per country | J-3 | Not implemented |
@@ -160,14 +162,121 @@ the working days, so that I can set a due date employees can realistically meet,
     the start date);
   - with the recommended due date, that learner is **On track**.
 
-### S-5: Clear errors, no crash, and recovery
+### S-5: Clear errors, no crash, and recovery (learner)
 
 **Job:** J-1 · **Status:** Implemented
 
-As a learner or an L&D admin, I want a clear message when something I enter can't be used, so that I can fix it
-and still get a correct answer, never a crash or a wrong number.
+As a learner, I want a clear message when something I enter can't be used, so that I can fix it and still get a
+correct daily amount, never a crash or a wrong number.
 
-#### Input rules
+The input rules and messages are in [Input rules and messages](#input-rules-and-messages), shared with S-12.
+
+- **AC-1** Given any condition in the messages table that applies to the learner form, when it happens, then its
+  message is shown, and none of them causes a crash, a blank page, an uncaught exception, or the text "NaN",
+  "Infinity" or "undefined" anywhere on the page.
+- **AC-2** Given several fields are wrong, when the form is shown, then all field errors appear at the same time,
+  each next to its own field.
+- **AC-3** Given the fields are valid but more than one check below fails, when the result is shown, then only the
+  first matching check is shown: time done > total → already complete → no working day checked → due date in the
+  past → no working days left → result.
+- **AC-4** Given an error is shown, when I fix the input, then the message goes and the correct result appears. No
+  reload is needed, and no earlier result is left on screen.
+- **AC-5** Given today Fri 2026-11-27, Sun–Thu and a due date of Sat 2026-11-28, when the result is shown, then it
+  says there are no working days left: a different case, with its own message, from no working day checked.
+- **AC-6** Given a field I have not changed or left yet, when I edit another field, then that field shows no error.
+- **AC-7** Given not every field is valid, when I look at the result area, then it is never blank; it shows a
+  friendly empty state: "Enter your training to see your daily pace."
+
+### S-6: Accessibility (learner)
+
+**Job:** J-1 · **Status:** Implemented
+
+As a learner who uses a keyboard or a screen reader, I want every part of the learner calculator to work without
+a mouse and to be read out, so that I can find out my daily amount like anyone else.
+
+- **AC-1** Given any input on the learner form, when it is shown, then it has a visible label tied to it, so a
+  screen reader reads the label and tests can find the input by its label.
+- **AC-2** Given only a keyboard, when I use the learner calculator, then everything works and keyboard focus is
+  always visible.
+- **AC-3** Given a screen reader, when the result changes, then it is announced: the result area is a live region
+  (`role="status"`, polite).
+- **AC-4** Given a field with an error, when a screen reader reaches it, then it has `aria-invalid="true"` and its
+  message is linked with `aria-describedby`. For the working days, each day toggle is marked and linked; for hours
+  and minutes, both inputs of the group are.
+- **AC-5** Given the Learner/Admin switch, the day toggles and the presets, when I use them with the keyboard, then
+  they behave as what they are: the switch is a two-option segmented control built on radio buttons, so it works
+  with the arrow keys and shows which role is selected; the day toggles are checkboxes and the presets are
+  buttons, so Tab, Space and Enter work on them.
+- **AC-6** Given an error from the checks in S-5 AC-3, when it is shown, then it appears next to its field and is
+  repeated in the result area, so screen readers announce it.
+- **AC-7** Given a small screen, when I scroll the form, then a short summary of the result (minutes a day and
+  status) stays at the top. It only repeats the result visually (`aria-hidden`), so screen readers announce the
+  result once, from the live region.
+- **AC-8** Given the due date field, when I pick a date, then I use a calendar, not the browser's date field (D-15):
+  - the field shows the date ("Thu 31 Dec 2026"), or "Pick a date" when empty, and opens a month calendar, Monday
+    first, with "Previous month" and "Next month" buttons;
+  - today and the picked day are marked; non-working days are lighter but can still be picked (S-2 AC-5); days
+    before today are greyed out and can't be picked, though the arrow keys still pass over them. The "in the past"
+    errors (S-5) stay: a page left open past midnight can still hold yesterday's date;
+  - it works with the keyboard alone: Enter or Down opens it on the picked day (else today), arrows move by day and
+    week, Home/End go to the start or end of the week, Page Up/Down change month (with Shift, year), Enter picks.
+    Escape closes it and returns focus to the field; the field has not been left, so an empty date shows no error
+    yet (S-5 AC-6). A click outside or Tab out also closes it;
+  - the field is a combobox labelled with the field's name; the calendar is a dialog with a grid.
+
+### S-12: Clear errors, no crash, and recovery (L&D admin)
+
+**Job:** J-3 · **Status:** Implemented
+
+As an L&D admin, I want a clear message when something I enter can't be used, so that I can fix it and still get
+a due date employees can meet, never a crash or a wrong date.
+
+The input rules and messages are in [Input rules and messages](#input-rules-and-messages), shared with S-5.
+
+- **AC-1** Given any condition in the messages table that applies to the admin form (course time, daily learning
+  time, start date, working days), when it happens, then its message is shown, and none of them causes a crash, a
+  blank page, an uncaught exception, or the text "NaN", "Infinity" or "undefined" anywhere on the page.
+- **AC-2** Given several fields are wrong, when the form is shown, then all field errors appear at the same time,
+  each next to its own field.
+- **AC-3** Given the fields are valid but more than one check below fails, when the result is shown, then only the
+  first matching check is shown: no working day checked → start date before today → result.
+- **AC-4** Given an error is shown, when I fix the input, then the message goes and the correct dates appear. No
+  reload is needed, and no earlier result is left on screen.
+- **AC-5** Given a field I have not changed or left yet, when I edit another field, then that field shows no error.
+- **AC-6** Given not every field is valid, when I look at the result area, then it is never blank; it shows a
+  friendly empty state: "Enter your course to see the earliest due date."
+- **AC-7** Given the start date was today when the page opened, when the page is still open the next day, then "The
+  start date can't be before today." is shown at the start date and in the result.
+
+### S-13: Accessibility (L&D admin)
+
+**Job:** J-3 · **Status:** Implemented
+
+As an L&D admin who uses a keyboard or a screen reader, I want every part of the admin calculator to work without
+a mouse and to be read out, so that I can set a due date employees can meet like anyone else.
+
+- **AC-1** Given any input on the admin form, when it is shown, then it has a visible label tied to it, so a screen
+  reader reads the label and tests can find the input by its label.
+- **AC-2** Given only a keyboard, when I use the admin calculator, then everything works and keyboard focus is
+  always visible.
+- **AC-3** Given a screen reader, when the earliest or recommended date changes, then it is announced: the result
+  area is the same live region as for the learner (`role="status"`, polite).
+- **AC-4** Given a field with an error, when a screen reader reaches it, then it has `aria-invalid="true"` and its
+  message is linked with `aria-describedby`, as in S-6 AC-4.
+- **AC-5** Given the Learner/Admin switch, the day toggles and the presets, when I use them with the keyboard, then
+  they work as in S-6 AC-5: arrow keys on the switch; Tab, Space and Enter on the toggles and presets.
+- **AC-6** Given an error from the checks in S-12 AC-3, when it is shown, then it appears next to its field and is
+  repeated in the result area, so screen readers announce it.
+- **AC-7** Given a small screen, when I scroll the form, then a short summary with the earliest due date stays at
+  the top, `aria-hidden` as in S-6 AC-7.
+- **AC-8** Given the start date field, when I pick a date, then it uses the same calendar as S-6 AC-8, with days
+  before today greyed out and the "start date can't be before today" error kept for a page left open past midnight.
+
+## Input rules and messages
+
+Shared by S-5 (learner) and S-12 (L&D admin).
+
+### Input rules
 
 | Field | Allowed |
 |---|---|
@@ -180,7 +289,7 @@ and still get a correct answer, never a crash or a wrong number.
 
 Spaces around a number are ignored. Time fields start at "0" rather than blank.
 
-#### Messages
+### Messages
 
 | Condition | Shown at | Message |
 |---|---|---|
@@ -200,65 +309,6 @@ Spaces around a number are ignored. Time fields start at "0" rather than blank.
 | No working days from today to the due date | result | There are no working days between today and the due date. Pick a later date or add working days. |
 | Admin start date before today | start date | The start date can't be before today. |
 | The engine gets an impossible number (a parser bug; should never be seen) | result | Something in the form isn't valid. Check the fields above. |
-
-#### Acceptance criteria
-
-- **AC-1** Given any condition in the messages table, when it happens, then its message is shown, and none of them
-  causes a crash, a blank page, an uncaught exception, or the text "NaN", "Infinity" or "undefined" anywhere on the
-  page.
-- **AC-2** Given several fields are wrong, when the form is shown, then all field errors appear at the same time,
-  each next to its own field.
-- **AC-3** Given the fields are valid but more than one check below fails, when the result is shown, then only the
-  first matching check is shown:
-  - **Learner:** time done > total → already complete → no working day checked → due date in the past → no
-    working days left → result.
-  - **Admin:** no working day checked → start date before today → result.
-- **AC-4** Given an error is shown, when I fix the input, then the message goes and the correct result appears. No
-  reload is needed, and no earlier result is left on screen.
-- **AC-5** Given today Fri 2026-11-27, Sun–Thu and a due date of Sat 2026-11-28, when the result is shown, then it
-  says there are no working days left: a different case, with its own message, from no working day checked.
-- **AC-6** Given a field I have not changed or left yet, when I edit another field, then that field shows no error.
-- **AC-7** Given not every field is valid, when I look at the result area, then it is never blank; it shows a
-  friendly empty state:
-  - Learner: "Enter your training to see your daily pace."
-  - Admin: "Enter your course to see the earliest due date."
-
-### S-6: Accessibility
-
-**Job:** J-1 · **Status:** Implemented
-
-As a learner or an L&D admin who uses a keyboard or a screen reader, I want every part of the calculator to work
-without a mouse and to be read out, so that I can plan my training (or a rollout) like anyone else.
-
-- **AC-1** Given any input, when it is shown, then it has a visible label tied to it, so a screen reader reads the
-  label and tests can find the input by its label.
-- **AC-2** Given only a keyboard, when I use the whole app, then everything works and keyboard focus is always
-  visible.
-- **AC-3** Given a screen reader, when the result changes, then it is announced: the result area is a live region
-  (`role="status"`, polite).
-- **AC-4** Given a field with an error, when a screen reader reaches it, then it has `aria-invalid="true"` and its
-  message is linked with `aria-describedby`. For the working days, each day toggle is marked and linked; for hours
-  and minutes, both inputs of the group are.
-- **AC-5** Given the Learner/Admin switch, the day toggles and the presets, when I use them with the keyboard, then
-  they behave as what they are: the switch is a two-option segmented control built on radio buttons, so it works
-  with the arrow keys and shows which role is selected; the day toggles are checkboxes and the presets are
-  buttons, so Tab, Space and Enter work on them.
-- **AC-6** Given an error from the checks in S-5 AC-3, when it is shown, then it appears next to its field and is
-  repeated in the result area, so screen readers announce it.
-- **AC-7** Given a small screen, when I scroll the form, then a short summary of the result (minutes a day and
-  status, or the earliest date) stays at the top. It only repeats the result visually (`aria-hidden`), so screen
-  readers announce the result once, from the live region.
-- **AC-8** Given a date field, when I pick a date, then I use a calendar, not the browser's date field (D-15):
-  - the field shows the date ("Thu 31 Dec 2026"), or "Pick a date" when empty, and opens a month calendar, Monday
-    first, with "Previous month" and "Next month" buttons;
-  - today and the picked day are marked; non-working days are lighter but can still be picked (S-2 AC-5); days
-    before today are greyed out and can't be picked, though the arrow keys still pass over them. The "in the past"
-    errors (S-5) stay: a page left open past midnight can still hold yesterday's date;
-  - it works with the keyboard alone: Enter or Down opens it on the picked day (else today), arrows move by day and
-    week, Home/End go to the start or end of the week, Page Up/Down change month (with Shift, year), Enter picks.
-    Escape closes it and returns focus to the field; the field has not been left, so an empty date shows no error
-    yet (S-5 AC-6). A click outside or Tab out also closes it;
-  - the field is a combobox labelled with the field's name; the calendar is a dialog with a grid.
 
 ---
 

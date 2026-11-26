@@ -119,16 +119,16 @@ describe('S-4: earliest and recommended due date', () => {
   });
 });
 
-describe('S-5: errors and the order they are checked in', () => {
-  it('S-5: no working day selected is an error', () => {
+describe('S-12: errors and the order they are checked in', () => {
+  it('S-12: no working day selected is an error', () => {
     expect(errorFor({ workingDays: days() })).toBe('no-working-days-selected');
   });
 
-  it('S-5: a start date before today is an error', () => {
+  it('S-12: a start date before today is an error', () => {
     expect(errorFor({ startDate: iso('2026-11-25') })).toBe('start-date-in-past');
   });
 
-  it('S-5 AC-3: no working day selected comes before a past start date', () => {
+  it('S-12 AC-3: no working day selected comes before a past start date', () => {
     expect(errorFor({ workingDays: days(), startDate: iso('2026-11-25') })).toBe('no-working-days-selected');
   });
 
@@ -142,11 +142,11 @@ describe('S-5: errors and the order they are checked in', () => {
     ['dailyMinutes', Number.NaN],
     ['dailyMinutes', 1.5],
     ['dailyMinutes', Number.POSITIVE_INFINITY],
-  ])('S-5 AC-1: %s = %s gives an error, not NaN or an exception', (field, value) => {
+  ])('S-12 AC-1: %s = %s gives an error, not NaN or an exception', (field, value) => {
     expect(errorFor({ [field]: value })).toBe('invalid-input');
   });
 
-  it('S-5 AC-1: no result ever contains NaN or Infinity, and nothing throws', () => {
+  it('S-12 AC-1: no result ever contains NaN or Infinity, and nothing throws', () => {
     const problems: string[] = [];
     for (const workingDays of [monFri, days(), days(0)]) {
       for (const startDate of [iso('2026-11-25'), THU, SAT, iso('2031-11-26')]) {

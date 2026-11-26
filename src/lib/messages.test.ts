@@ -37,13 +37,13 @@ const CALC_CODES: CalcError[] = [
 ];
 
 describe('messages match docs/user-stories.md word for word', () => {
-  it.each(FIELD_CODES)('S-5 AC-1: field error %s has its message from the docs', (code) => {
+  it.each(FIELD_CODES)('S-5 AC-1, S-12 AC-1: field error %s has its message from the docs', (code) => {
     const text = FIELD_ERROR_TEXT[code];
     expect(text).toBeTruthy();
     expect(userStories).toContain(text);
   });
 
-  it.each(CALC_CODES)('S-5 AC-1: error %s has its message from the docs', (code) => {
+  it.each(CALC_CODES)('S-5 AC-1, S-12 AC-1: error %s has its message from the docs', (code) => {
     const text = CALC_ERROR_TEXT[code];
     expect(text).toBeTruthy();
     expect(userStories).toContain(text);
@@ -75,7 +75,7 @@ describe('where each engine error is shown (S-5 messages table)', () => {
     ['no-working-days-left', 'result'],
     ['start-date-in-past', 'startDate'],
     ['invalid-input', 'result'],
-  ] as const)('S-5: %s is shown at %s', (code, place) => {
+  ] as const)('S-5, S-12: %s is shown at %s', (code, place) => {
     expect(CALC_ERROR_PLACE[code]).toBe(place);
   });
 });

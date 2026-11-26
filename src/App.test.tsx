@@ -332,13 +332,13 @@ describe('learner', () => {
 });
 
 describe('admin', () => {
-  it('S-5 AC-7: a fresh admin form shows its empty state', async () => {
+  it('S-12 AC-6: a fresh admin form shows its empty state', async () => {
     const user = setup();
     await switchToAdmin(user);
     expect(result()).toHaveTextContent(TEXT.adminEmpty);
   });
 
-  it('S-4 AC-1, S-6 AC-5: the role switch works with arrow keys, and the start date is today', async () => {
+  it('S-4 AC-1, S-6 AC-5, S-13 AC-5: the role switch works with arrow keys, and the start date is today', async () => {
     const user = setup();
     const learner = screen.getByRole('radio', { name: 'a learner' });
     expect(learner).toBeChecked();
@@ -377,7 +377,7 @@ describe('admin', () => {
     expect(result()).toHaveTextContent(TEXT.adminNoTime);
   });
 
-  it('S-5, S-6 AC-8: a start date that becomes past (page open past midnight) still shows its error', async () => {
+  it('S-12 AC-7, S-13 AC-8: a start date that becomes past (page open past midnight) still shows its error', async () => {
     const { user, setToday } = setupWithClock();
     await switchToAdmin(user);
     await setDuration(user, 'Course time', '5', '0');
@@ -502,7 +502,7 @@ describe('accessibility', () => {
     expect(result()).toHaveAttribute('aria-live', 'polite');
   });
 
-  it.each(['learner', 'admin'])('S-6 AC-1: every control on the %s form has a label', async (role) => {
+  it.each(['learner', 'admin'])('S-6 AC-1, S-13 AC-1: every control on the %s form has a label', async (role) => {
     const user = setup();
     if (role === 'admin') await switchToAdmin(user);
     const controls = document.querySelectorAll('input, select, button');

@@ -106,7 +106,7 @@ src/lib/          the engine and its helpers: pure TypeScript, no React, no cloc
   dates.ts        calendar dates as whole day numbers
   workingDays.ts  counting and stepping over working days
   learner.ts      S-1 to S-3        admin.ts   S-4
-  parse.ts        form text to checked input (S-5)
+  parse.ts        form text to checked input (S-5, S-12)
   messages.ts     every label and message     format.ts   the result sentences
 src/components/   the two forms, the date picker, the working-day picker
 src/today.ts      the only place the app reads the clock

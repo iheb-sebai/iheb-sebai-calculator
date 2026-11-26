@@ -181,11 +181,11 @@ describe('parseAdminForm', () => {
     ['', 'required'],
     ['481', 'per-day-over-max'],
     ['1.5', 'not-whole'],
-  ])('S-5 input rules: daily time %j gives %s', (daily, code) => {
+  ])('S-12 input rules: daily time %j gives %s', (daily, code) => {
     expect(errorsOf(parseAdminForm(adminForm({ daily }), THU))).toEqual([{ field: 'daily', code }]);
   });
 
-  it('S-5 input rules: a course time of 0 is an error on the course group', () => {
+  it('S-12 input rules: a course time of 0 is an error on the course group', () => {
     expect(errorsOf(parseAdminForm(adminForm({ course: duration('0', '0') }), THU))).toEqual([
       { field: 'course', code: 'total-zero' },
     ]);
@@ -194,11 +194,11 @@ describe('parseAdminForm', () => {
   it.each([
     ['', 'date-invalid'],
     ['2031-11-27', 'date-too-far'],
-  ])('S-5 input rules: start date %j gives %s', (startDate, code) => {
+  ])('S-12 input rules: start date %j gives %s', (startDate, code) => {
     expect(errorsOf(parseAdminForm(adminForm({ startDate }), THU))).toEqual([{ field: 'startDate', code }]);
   });
 
-  it('S-5 AC-2: every field error is reported at once', () => {
+  it('S-12 AC-2: every field error is reported at once', () => {
     const form = adminForm({ course: duration('1', '60'), startDate: 'soon', daily: '' });
     expect(errorsOf(parseAdminForm(form, THU))).toEqual([
       { field: 'courseMinutes', code: 'minutes-over-59' },
